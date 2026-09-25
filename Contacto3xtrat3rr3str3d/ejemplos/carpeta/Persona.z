@@ -1,0 +1,155 @@
+public class Persona {
+    // Atributos públicos (el encapsulamiento se verá en la Parte 2)
+    String nombre;
+    int edad;
+    Persona[] apellidos;
+
+    // CONSTRUCTOR: Sirve para inicializar el objeto al crearlo
+    public Persona(String nombreParametro, int edadParametro) {
+        nombre = nombreParametro;
+        edad = edadParametro;
+    }
+
+    /* Sobrecarga de constructor,
+       tambien se pueden sobrecargar metodos. */
+    public Persona() {
+        nombre = "Sin nombre";
+        edad = 0;
+    }
+
+    public void saludar() {
+        println("¡Hola! Me llamo " + nombre + " y tengo " + edad + " años.");
+    }
+
+    public int calcularAnioNacimiento(int anioActual) {
+        return anioActual - edad;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public int obtenerEdad() {
+        return edad;
+    }
+
+    public void hablar(String texto) {
+        print(texto);
+    }
+
+    public int factorial(int n) {
+        if (n <= 1) return 1;
+        return n * factorial(n - 1);
+    }
+
+    public void pruebas(boolean condicion, boolean otraCondicion) {
+        int a = 10;
+        int b = 3;
+        int suma = a + b;
+        int modulo = a % b;
+        a++;
+        b--;
+        boolean condicionAnd = (a > 5 && b < 10);
+        boolean condicionNot = !(a == 10);
+        int x = 5;
+        x += 3;
+        x -= 2;
+        x *= 2;
+        int edad = 20;
+        String mensaje = (edad >= 18) ? "Es mayor de edad" : "Es menor de edad";
+        int numero = 7;
+        int esParOImpar = (numero % 2 == 0) ? 0 : 1;
+
+        int[] numeros = {10, 20, 30, 40, 50};
+        int resultado;
+        resultado = numeros[0] + numeros[1];
+        numeros[2] = numeros[0] * 3;
+
+        Persona p1 = new Persona("Carlos", 25);
+        Persona p2 = new Persona("Ana", 30);
+        int sumaEdades;
+        sumaEdades = p1.edad + p2.edad;
+        String mensajeClasificacion = (p1.edad >= 18) ? "Adulto" : "Menor";
+        int anioNac = 2026 - p1.obtenerEdad();
+        if (p1 == null) {
+            print("Es posible comparar si un objeto es nulo");
+        }
+
+        double altura = 1.75;
+        char inicial = 'A';
+        int[] calificaciones = new int[5];
+        String[] nombres = {"Carlos", "Ana", "Pedro"};
+        int[][] matriz = new int[3][3];
+        matriz[1][2] = 4;
+        Persona alumno1;
+        alumno1 = new Persona("Carlos", 20);
+        this.edad = alumno1.apellidos[0].obtenerEdad();
+
+        int opcion = 2;
+        if (edad > 18) {
+            println("Es mayor de edad.");
+        } else if (edad == 18) {
+            println("¡Justo tiene 18 años!");
+        } else {
+            println("Es menor de edad.");
+        }
+
+        if (edad >= 18)
+            println("Es adulto");
+        else
+            println("Es menor");
+
+        if (condicion == true)
+            if (otraCondicion == false)
+                print("hola");
+
+        switch (opcion) {
+            case 1:
+                println("Opción 1 seleccionada");
+                break;
+            case 2:
+                println("Opción 2 seleccionada");
+            default:
+                println("Opción no válida");
+                break;
+        }
+
+        for (int i = 0; i < 5; i++) {
+            println("Iteración número: " + i);
+            if (i == 2) {
+                continue;
+            }
+            if (i == 4) {
+                break;
+            }
+        }
+
+        for ( ; ; ) {
+            println("Este bucle nunca termina a menos que use un break...");
+            break;
+        }
+
+        int contador = 0;
+        while (contador < 3) {
+            println("Contador while: " + contador);
+            contador++;
+            if (contador == 1) {
+                continue;
+            }
+        }
+
+        int intentos = 0;
+        do {
+            intentos++;
+            println("Intento número: " + intentos);
+            if (intentos == 2) {
+                break;
+            }
+        } while (intentos < 5);
+
+        println("Imprimo con un salto de linea");
+        print("Imprimo sin un salto de linea");
+        readln();
+        String leido = readln();
+    }
+}

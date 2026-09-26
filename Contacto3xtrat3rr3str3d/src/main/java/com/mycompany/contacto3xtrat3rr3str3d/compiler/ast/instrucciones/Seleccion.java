@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** elegir / switch */
 public class Seleccion extends Instruccion {
 
     private final Expresion valor;

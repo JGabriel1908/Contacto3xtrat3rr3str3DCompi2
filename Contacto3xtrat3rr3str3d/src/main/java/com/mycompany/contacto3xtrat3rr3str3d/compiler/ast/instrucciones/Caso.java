@@ -6,7 +6,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** Caso de un elegir/switch. Sin romper/break continúa con el siguiente caso. */
 public class Caso extends Nodo {
 
     private final Expresion valor;
@@ -18,7 +17,6 @@ public class Caso extends Nodo {
         this.instrucciones = List.copyOf(instrucciones);
     }
 
-    /** null para el caso por defecto (siempre / default). */
     public Expresion getValor() {
         return valor;
     }
@@ -31,7 +29,6 @@ public class Caso extends Nodo {
         return instrucciones;
     }
 
-    /** Cada caso tiene su propio ámbito. */
     public void analizar(ContextoSemantico ctx) {
         ctx.tabla().abrir("caso");
         instrucciones.forEach(i -> i.analizar(ctx));

@@ -6,7 +6,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones.Declarac
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** Archivo .pig: importaciones, variables globales y función principal. */
 public class UnidadPigLatin extends Unidad {
 
     private final List<Import> imports;
@@ -29,7 +28,6 @@ public class UnidadPigLatin extends Unidad {
     public void analizar(ContextoSemantico ctx) {
         ctx.setRetornoActual(null);
         globales.forEach(g -> g.analizar(ctx));
-        // MAIOR> comparte el ámbito global: no puede redeclarar una variable de VARIABILES>
         principal.getInstrucciones().forEach(i -> i.analizar(ctx));
     }
 }

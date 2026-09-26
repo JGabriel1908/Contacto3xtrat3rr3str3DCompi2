@@ -8,26 +8,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Reglas de compatibilidad de tipos.
- *
- * Jerarquía numérica (conversión implícita solo hacia la derecha):
- *
- *     caracter  →  entero  →  decimal
- *
- * - Aritmética (+ - * /): el resultado es el mayor de los dos tipos, y como mínimo entero
- *   (caracter + caracter = entero). Entero / entero es división entera.
- * - %: solo entre enteros o caracteres.
- * - + con una cadena en cualquiera de los lados concatena: el resultado es cadena.
- * - Relacionales (< > <= >=): entre numéricos. == y != además entre dos cadenas, dos booleanos
- *   o, en Zetariano, entre referencias del mismo tipo o contra null (objetos, arreglos y String).
- * - Lógicos (&& || !): solo booleanos.
- * - Asignación: el valor debe ser del mismo tipo o de uno menor en la jerarquía.
- *   Cadena y booleano solo aceptan su propio tipo. Nunca se convierte hacia abajo (decimal → entero).
- *
- * Las reglas son las mismas para los tres lenguajes; cambian los nombres de los tipos y
- * null, que solo existe en Zetariano.
- */
 public final class TablaCompatibilidad {
 
     private static final Map<Lenguaje, TablaCompatibilidad> TABLAS = new EnumMap<>(Lenguaje.class);
@@ -82,9 +62,7 @@ public final class TablaCompatibilidad {
         return !t.esArreglo() && t.getBase() == base;
     }
 
-    // ------------------------------------------------------------------ asignación
 
-    /** ¿Se puede guardar un valor de tipo {@code origen} en un destino de tipo {@code destino}? */
     public boolean asignable(Tipo destino, Tipo origen) {
         if (esError(destino) || esError(origen)) return true;
         if (destino.equals(origen)) return true;
@@ -94,9 +72,6 @@ public final class TablaCompatibilidad {
         return rd > 0 && ro > 0 && ro <= rd;
     }
 
-    // ------------------------------------------------------------------ operadores
-
-    /** Tipo resultante de {@code a op b}, o null si la operación no es válida. */
     public Tipo binaria(OperadorBinario op, Tipo a, Tipo b) {
         if (esError(a) || esError(b)) return Tipo.ERROR;
         int ra = rango(a);
@@ -130,12 +105,11 @@ public final class TablaCompatibilidad {
         return (nuloA && (nuloB || aceptaNulo(b))) || (nuloB && aceptaNulo(a));
     }
 
-    /** En Zetariano, como en Java, los objetos, arreglos y String pueden ser null. */
     private static boolean aceptaNulo(Tipo t) {
         return t.esReferencia() || es(t, Tipo.Base.CADENA);
     }
 
-    /** Tipo resultante de {@code op t}, o null si no es válido. */
+
     public Tipo unaria(OperadorUnario op, Tipo t) {
         if (esError(t)) return Tipo.ERROR;
         return switch (op) {
@@ -144,9 +118,6 @@ public final class TablaCompatibilidad {
         };
     }
 
-    // ------------------------------------------------------------------ documentación
-
-    /** Tablas en formato Markdown para el manual técnico. */
     public String documentar() {
         StringBuilder sb = new StringBuilder();
         sb.append("## Tabla de compatibilidad de tipos — ").append(lenguaje.getNombre()).append("\n\n");

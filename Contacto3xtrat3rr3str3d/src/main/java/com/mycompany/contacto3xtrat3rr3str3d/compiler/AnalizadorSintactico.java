@@ -18,9 +18,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-/**
- * Ejecuta el análisis léxico y sintáctico de un archivo y recolecta los errores.
- */
+
 public final class AnalizadorSintactico {
 
     public record Resultado(ParseTree arbol, Parser parser, CommonTokenStream tokens,

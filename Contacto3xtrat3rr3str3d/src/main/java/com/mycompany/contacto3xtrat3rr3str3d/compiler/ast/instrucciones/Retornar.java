@@ -6,7 +6,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** retornar / return */
 public class Retornar extends Instruccion {
 
     private final Expresion valor;
@@ -16,7 +15,6 @@ public class Retornar extends Instruccion {
         this.valor = valor;
     }
 
-    /** null en funciones sin retorno. */
     public Expresion getValor() {
         return valor;
     }

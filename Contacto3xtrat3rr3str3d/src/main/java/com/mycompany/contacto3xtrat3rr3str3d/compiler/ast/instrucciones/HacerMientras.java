@@ -4,7 +4,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/** hacer-mientras / do-while / facere-dum */
 public class HacerMientras extends Instruccion {
 
     private final Instruccion cuerpo;

@@ -3,7 +3,6 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/** continuar / continue / perge */
 public class Continuar extends Instruccion {
 
     public Continuar(Ubicacion ubicacion) {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Proyecto completo: el archivo .pig principal y los archivos .y / .z que importa.
+ * Proyecto completo, ya tomo en cuenta los tres archivos
  */
 public class Programa extends Nodo {
 
@@ -19,7 +19,6 @@ public class Programa extends Nodo {
         this.archivosZetariano = List.copyOf(archivosZetariano);
     }
 
-    /** Todas las unidades, empezando por la principal. */
     public List<Unidad> getUnidades() {
         List<Unidad> todas = new ArrayList<>();
         todas.add(principal);

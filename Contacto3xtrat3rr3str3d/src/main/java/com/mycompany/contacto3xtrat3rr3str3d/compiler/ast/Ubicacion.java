@@ -6,8 +6,8 @@ import java.io.File;
 /**
  * Posición de un nodo en el código fuente.
  *
- * @param linea   línea (base 1)
- * @param columna columna (base 0)
+ * @param linea   
+ * @param columna 
  */
 public record Ubicacion(String archivo, Lenguaje lenguaje, int linea, int columna) {
 

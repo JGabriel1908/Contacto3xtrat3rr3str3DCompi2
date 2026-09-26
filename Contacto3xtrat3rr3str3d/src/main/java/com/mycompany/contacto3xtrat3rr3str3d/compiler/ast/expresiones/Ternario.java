@@ -5,7 +5,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.TablaCompatibilidad;
 
-/** condicion ? siVerdadero : siFalso */
 public class Ternario extends Expresion {
 
     private final Expresion condicion;

@@ -3,11 +3,7 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.Lenguaje;
 import java.util.Objects;
 
-/**
- * Tipo de dato del AST común. Los tipos de cada lenguaje se traducen a estos:
- * entero/int/numerus -> ENTERO, flotante/double/decimalis -> DECIMAL, etc.
- * Un arreglo es un tipo base con una cantidad de dimensiones mayor que cero.
- */
+
 public final class Tipo {
 
     public enum Base {
@@ -68,23 +64,19 @@ public final class Tipo {
         return new Tipo(Base.NOMBRADO, nombre, 0);
     }
 
-    /** Este tipo con {@code dimensiones} dimensiones de arreglo adicionales. */
     public Tipo arreglo(int dimensiones) {
         return dimensiones == 0 ? this : new Tipo(base, nombre, this.dimensiones + dimensiones);
     }
 
-    /** Tipo de los elementos de un arreglo (una dimensión menos). */
     public Tipo elemento() {
         if (dimensiones == 0) throw new IllegalStateException(this + " no es un arreglo");
         return new Tipo(base, nombre, dimensiones - 1);
     }
 
-    /** Tipo sin dimensiones de arreglo. */
     public Tipo tipoBase() {
         return dimensiones == 0 ? this : new Tipo(base, nombre, 0);
     }
 
-    /** Resuelve un tipo NOMBRADO a estructura o clase conservando nombre y dimensiones. */
     public Tipo resolver(Base nuevaBase) {
         return new Tipo(nuevaBase, nombre, dimensiones);
     }
@@ -93,7 +85,6 @@ public final class Tipo {
         return base;
     }
 
-    /** Nombre de la estructura o clase; null para los tipos primitivos. */
     public String getNombre() {
         return nombre;
     }
@@ -117,22 +108,18 @@ public final class Tipo {
         return base == Base.ERROR;
     }
 
-    /** ¿Es exactamente ese tipo base, sin dimensiones de arreglo? */
     public boolean es(Base base) {
         return dimensiones == 0 && this.base == base;
     }
 
-    /** Entero o caracter (también ERROR, para no repetir errores). Sirve para índices y tamaños. */
     public boolean esEntero() {
         return esError() || es(Base.ENTERO) || es(Base.CARACTER);
     }
 
-    /** Arreglos, estructuras y objetos se manejan por referencia. */
     public boolean esReferencia() {
         return esArreglo() || base == Base.ESTRUCTURA || base == Base.CLASE || base == Base.NOMBRADO;
     }
 
-    /** Nombre del tipo con la palabra que usa cada lenguaje (numerus, int, entero...). */
     public String nombreEn(Lenguaje lenguaje) {
         if (lenguaje == null) return toString();
         String texto = switch (base) {

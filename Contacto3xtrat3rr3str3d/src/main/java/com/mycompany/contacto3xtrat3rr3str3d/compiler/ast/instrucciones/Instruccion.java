@@ -10,10 +10,8 @@ public abstract class Instruccion extends Nodo {
         super(ubicacion);
     }
 
-    /** Análisis semántico de la instrucción. */
     public abstract void analizar(ContextoSemantico ctx);
 
-    /** ¿La instrucción termina siempre con un retornar? (para validar funciones con tipo). */
     public boolean siempreRetorna() {
         return false;
     }

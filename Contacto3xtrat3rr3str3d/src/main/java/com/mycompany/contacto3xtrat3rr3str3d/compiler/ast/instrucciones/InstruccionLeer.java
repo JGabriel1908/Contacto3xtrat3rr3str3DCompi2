@@ -5,10 +5,7 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/**
- * Lee una línea de la entrada y la guarda (convertida al tipo del destino) en {@code destino}.
- * Pig Latin: "edad <<" / "<<".  Y?: "leer()".  Zetariano: "readln();"
- */
+
 public class InstruccionLeer extends Instruccion {
 
     private final Expresion destino;

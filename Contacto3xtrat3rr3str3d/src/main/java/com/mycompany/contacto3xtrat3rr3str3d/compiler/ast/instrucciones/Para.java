@@ -5,7 +5,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** para / for / per */
 public class Para extends Instruccion {
 
     private final List<Instruccion> inicio;

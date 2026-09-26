@@ -6,7 +6,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** imprimir() / print() / println() / >> */
 public class Imprimir extends Instruccion {
 
     private final List<Expresion> valores;

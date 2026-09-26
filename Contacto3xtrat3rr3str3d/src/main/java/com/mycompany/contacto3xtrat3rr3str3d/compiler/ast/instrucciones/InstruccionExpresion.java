@@ -10,7 +10,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.LlamadaMet
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.NuevoObjeto;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/** Expresión usada como instrucción: asignación, incremento o llamada. */
 public class InstruccionExpresion extends Instruccion {
 
     private final Expresion expresion;

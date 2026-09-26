@@ -31,19 +31,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Estado compartido del análisis semántico y validaciones que usan varios nodos.
- *
- * Cada nodo del AST se analiza a sí mismo con su método analizar(ctx); este contexto le da
- * acceso a la tabla de símbolos, a la lista de errores y al lugar del recorrido donde está
- * (clase actual, tipo de retorno esperado, si está dentro de un ciclo...).
- */
+
 public class ContextoSemantico {
 
     private final TablaSimbolos tabla = new TablaSimbolos();
     private final List<ErrorCompilacion> errores = new ArrayList<>();
     private final List<InfoEstructura> estructurasGlobales = new ArrayList<>();
-    /** Nombres usados a la vez por una estructura y una clase: ya se reportaron, se ignoran después. */
     private final Set<String> nombresEnConflicto = new HashSet<>();
 
     // Posición actual del recorrido
@@ -52,9 +45,7 @@ public class ContextoSemantico {
     private int ciclos;
     private int selecciones;
 
-    // ==================================================================================
-    // Estado
-    // ==================================================================================
+    
 
     public TablaSimbolos tabla() {
         return tabla;
@@ -80,7 +71,6 @@ public class ContextoSemantico {
         return nombresEnConflicto.contains(nombre);
     }
 
-    /** Clase que se está analizando (Zetariano), o null. */
     public InfoClase getClaseActual() {
         return claseActual;
     }
@@ -89,7 +79,6 @@ public class ContextoSemantico {
         this.claseActual = clase;
     }
 
-    /** Tipo que debe retornar la función actual, o null fuera de una función. */
     public Tipo getRetornoActual() {
         return retornoActual;
     }
@@ -122,10 +111,6 @@ public class ContextoSemantico {
         return selecciones > 0;
     }
 
-    // ==================================================================================
-    // Errores y nombres según el lenguaje
-    // ==================================================================================
-
     public void error(Nodo nodo, String mensaje) {
         error(nodo, mensaje, 1);
     }
@@ -135,17 +120,14 @@ public class ContextoSemantico {
         errores.add(new ErrorCompilacion(TipoError.SEMANTICO, mensaje, u.archivo(), u.linea(), u.columna(), longitud));
     }
 
-    /** Reglas de tipos del lenguaje del nodo. */
     public TablaCompatibilidad compat(Nodo nodo) {
         return TablaCompatibilidad.para(nodo.getLenguaje());
     }
 
-    /** Nombre del tipo como se escribe en el lenguaje del nodo (numerus, int, entero...). */
     public String nombreTipo(Nodo nodo, Tipo tipo) {
         return tipo.nombreEn(nodo.getLenguaje());
     }
 
-    /** Palabra reservada equivalente en el lenguaje del nodo. */
     public String palabra(Nodo nodo, String y, String zetariano, String pigLatin) {
         return switch (nodo.getLenguaje()) {
             case Y -> y;
@@ -154,14 +136,6 @@ public class ContextoSemantico {
         };
     }
 
-    // ==================================================================================
-    // Tipos
-    // ==================================================================================
-
-    /**
-     * Verifica que un tipo exista; resuelve los nombres de Pig Latin a estructura o clase.
-     * Devuelve Tipo.ERROR si no existe (y reporta el error si {@code reportar}).
-     */
     public Tipo resolverTipo(Tipo tipo, Nodo donde, boolean reportar) {
         if (tipo == null) return Tipo.ERROR;
         String nombre = tipo.getNombre();
@@ -189,11 +163,6 @@ public class ContextoSemantico {
         };
     }
 
-    // ==================================================================================
-    // Ámbitos y cuerpos
-    // ==================================================================================
-
-    /** Cuerpo de un si o de un ciclo: siempre tiene su propio ámbito, aunque no sea un bloque. */
     public void analizarCuerpo(Instruccion instruccion, String nombreAmbito) {
         tabla.abrir(nombreAmbito);
         if (instruccion instanceof Bloque b) {
@@ -204,10 +173,6 @@ public class ContextoSemantico {
         tabla.cerrar();
     }
 
-    /**
-     * Función, método o constructor. Parámetros y cuerpo comparten ámbito (no se puede
-     * redeclarar un parámetro en el cuerpo). Si tiene tipo de retorno, debe retornar en todos los caminos.
-     */
     public void analizarFuncion(String nombre, List<Parametro> parametros, Tipo retorno, Bloque cuerpo,
                                 Nodo declaracion, String descripcion) {
         tabla.abrir(nombre);
@@ -225,14 +190,6 @@ public class ContextoSemantico {
         tabla.cerrar();
     }
 
-    // ==================================================================================
-    // Valores, listas e inicializadores
-    // ==================================================================================
-
-    /**
-     * Verifica que {@code valor} pueda guardarse en un destino de tipo {@code destino}.
-     * Admite listas {...} y la lectura de consola (que se convierte al tipo del destino).
-     */
     public void verificarValor(Tipo destino, Expresion valor, List<Expresion> dimensiones) {
         if (valor instanceof InicializadorLista lista) {
             verificarLista(destino, lista, dimensiones, 0);
@@ -253,7 +210,6 @@ public class ContextoSemantico {
         }
     }
 
-    /** Lista {...} para un arreglo (cada elemento del tipo del elemento) o una estructura (campo por campo). */
     public void verificarLista(Tipo destino, InicializadorLista lista, List<Expresion> dimensiones, int nivel) {
         lista.setTipo(destino);
         List<Expresion> elementos = lista.getElementos();
@@ -295,7 +251,6 @@ public class ContextoSemantico {
         }
     }
 
-    /** Dimensiones declaradas de una variable o campo (para validar el tamaño de las listas). */
     public List<Expresion> dimensionesDe(Expresion destino) {
         if (destino instanceof Identificador id && id.getSimbolo() != null) {
             if (id.getSimbolo().getDeclaracion() instanceof DeclaracionVariable d) return d.getDimensiones();
@@ -304,7 +259,6 @@ public class ContextoSemantico {
         return List.of();
     }
 
-    /** Solo variables, elementos de arreglo y campos/atributos pueden recibir un valor. */
     public boolean verificarAsignable(Expresion e) {
         if (!e.esAsignable()) {
             error(e, "Esta expresión no puede recibir un valor");
@@ -321,20 +275,12 @@ public class ContextoSemantico {
         }
     }
 
-    // ==================================================================================
-    // Llamadas y sobrecarga
-    // ==================================================================================
-
     public List<Tipo> tiposArgumentos(List<Expresion> argumentos) {
         List<Tipo> tipos = new ArrayList<>();
         for (Expresion a : argumentos) tipos.add(a.analizar(this));
         return tipos;
     }
 
-    /**
-     * Funciones de Y?: los primitivos se pasan por valor; arreglos y estructuras por referencia,
-     * así que el argumento debe ser una variable exactamente del mismo tipo.
-     */
     public void verificarArgumentosFuncion(DefFuncion f, List<Expresion> argumentos, List<Tipo> tipos, Nodo llamada) {
         List<Parametro> parametros = f.getParametros();
         if (parametros.size() != argumentos.size()) {
@@ -365,7 +311,6 @@ public class ContextoSemantico {
         }
     }
 
-    /** Método de una clase según los argumentos (con sobrecarga); null si no existe o es ambiguo. */
     public DefMetodo resolverMetodo(InfoClase clase, String nombre, List<Tipo> argumentos, Nodo llamada) {
         List<DefMetodo> candidatos = clase.getMetodos(nombre);
         if (candidatos.isEmpty()) {
@@ -384,7 +329,6 @@ public class ContextoSemantico {
         return r.elegido();
     }
 
-    /** Constructor de una clase según los argumentos (con sobrecarga); null si no existe o es ambiguo. */
     public DefConstructor resolverConstructor(InfoClase clase, List<Tipo> argumentos, Nodo llamada) {
         if (argumentos.stream().anyMatch(Tipo::esError)) return null;
         Resolucion<DefConstructor> r = resolverSobrecarga(clase.getConstructores(), DefConstructor::getParametros,
@@ -400,10 +344,6 @@ public class ContextoSemantico {
     private record Resolucion<T>(T elegido, boolean ambigua) {
     }
 
-    /**
-     * Elige entre sobrecargas: primero la coincidencia exacta; si no, entre las que aceptan los
-     * argumentos con conversiones implícitas, la más específica. Si no hay una única, es ambigua.
-     */
     private <T> Resolucion<T> resolverSobrecarga(List<T> candidatos, Function<T, List<Parametro>> parametros,
                                                  List<Tipo> argumentos, Nodo llamada) {
         TablaCompatibilidad c = compat(llamada);
@@ -432,12 +372,10 @@ public class ContextoSemantico {
         return new Resolucion<>(null, true);
     }
 
-    /** Tipos de los parámetros, en orden. */
     public static List<Tipo> firma(List<Parametro> parametros) {
         return parametros.stream().map(Parametro::getTipo).toList();
     }
 
-    /** "(int, String)" con los nombres de tipo del lenguaje del nodo. */
     public String tiposTexto(List<Tipo> tipos, Nodo nodo) {
         return tipos.stream().map(t -> nombreTipo(nodo, t)).collect(Collectors.joining(", ", "(", ")"));
     }

@@ -8,10 +8,7 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.Simbolo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/**
- * Declaración de una variable o arreglo.
- * Ejemplos: entero x = 5 / int[] a = {1, 2} / series v[3] : numerus / esto o : novus Persona()
- */
+
 public class DeclaracionVariable extends Instruccion {
 
     private final Tipo tipo;
@@ -36,7 +33,6 @@ public class DeclaracionVariable extends Instruccion {
         return nombre;
     }
 
-    /** Tamaños declarados de cada dimensión (vacío si no es arreglo o no se indicó tamaño). */
     public List<Expresion> getDimensiones() {
         return dimensiones;
     }
@@ -51,7 +47,6 @@ public class DeclaracionVariable extends Instruccion {
         for (Expresion dim : dimensiones) {
             if (!dim.analizar(ctx).esEntero()) ctx.error(dim, "El tamaño de un arreglo debe ser entero");
         }
-        // El valor se analiza antes de declarar la variable: "entero x = x" es un error
         if (valorInicial != null) ctx.verificarValor(resuelto, valorInicial, dimensiones);
         if (!ctx.tabla().declarar(new Simbolo(nombre, Categoria.VARIABLE, resuelto, this))) {
             ctx.error(this, "La variable '" + nombre + "' ya fue declarada en este ámbito");

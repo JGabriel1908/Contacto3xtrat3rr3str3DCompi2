@@ -4,9 +4,7 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/**
- * Condicional. Las cadenas sino/else if/aliter se representan anidando otro Si en {@code sino}.
- */
+
 public class Si extends Instruccion {
 
     private final Expresion condicion;

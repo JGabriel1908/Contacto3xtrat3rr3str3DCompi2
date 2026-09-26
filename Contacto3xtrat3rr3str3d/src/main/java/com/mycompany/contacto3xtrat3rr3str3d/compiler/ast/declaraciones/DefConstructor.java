@@ -23,8 +23,7 @@ public class DefConstructor extends Nodo {
         this.cuerpo = cuerpo;
     }
 
-    /** Debe coincidir con el nombre de la clase (validación semántica). */
-    public String getNombre() {
+    public String getNombre() { //coincidir con el de la clase
         return nombre;
     }
 
@@ -32,7 +31,6 @@ public class DefConstructor extends Nodo {
         return parametros;
     }
 
-    /** Pasada 2: se llama como la clase, sus parámetros existen y la firma no se repite. */
     public void validarFirma(ContextoSemantico ctx, DefClase clase, List<List<Tipo>> firmasPrevias) {
         if (!nombre.equals(clase.getNombre())) {
             ctx.error(this, "'" + nombre + "' no tiene tipo de retorno; si es un constructor debe llamarse "
@@ -45,7 +43,6 @@ public class DefConstructor extends Nodo {
         firmasPrevias.add(firma);
     }
 
-    /** Pasada 3: analiza el cuerpo (un constructor no retorna valor). */
     public void analizar(ContextoSemantico ctx) {
         ctx.analizarFuncion(nombre + "()", parametros, Tipo.VACIO, cuerpo, this, null);
     }

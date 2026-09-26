@@ -3,7 +3,7 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.Lenguaje;
 
 /**
- * Nodo base del AST común a los tres lenguajes.
+ *Sera para los tres lenguajes
  */
 public abstract class Nodo {
 
@@ -17,7 +17,6 @@ public abstract class Nodo {
         return ubicacion;
     }
 
-    /** Lenguaje del archivo del que proviene el nodo. */
     public Lenguaje getLenguaje() {
         return ubicacion.lenguaje();
     }

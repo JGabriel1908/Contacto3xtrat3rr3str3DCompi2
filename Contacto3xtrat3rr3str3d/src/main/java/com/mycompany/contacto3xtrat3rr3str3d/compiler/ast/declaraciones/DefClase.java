@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Clase de Zetariano. */
+//clase para el zetariano
 public class DefClase extends Nodo {
 
     private final Modificador modificador;
@@ -41,7 +41,6 @@ public class DefClase extends Nodo {
         return metodos;
     }
 
-    /** Pasada 1: registra la clase. El archivo debe llamarse como la clase y el nombre no puede repetirse. */
     public void registrar(ContextoSemantico ctx, String archivo) {
         String nombreArchivo = new File(archivo).getName();
         String esperado = nombreArchivo.substring(0, nombreArchivo.lastIndexOf('.'));
@@ -62,13 +61,11 @@ public class DefClase extends Nodo {
         tabla.registrarClase(new InfoClase(this));
     }
 
-    /** Información registrada de esta clase, o null si no se registró (nombre repetido). */
     private InfoClase info(ContextoSemantico ctx) {
         InfoClase info = ctx.tabla().buscarClase(nombre);
         return info != null && info.getDefinicion() == this ? info : null;
     }
 
-    /** Pasada 2: atributos, constructores y métodos (con sus sobrecargas). */
     public void validarMiembros(ContextoSemantico ctx) {
         InfoClase info = info(ctx);
         if (info == null) return;
@@ -80,7 +77,6 @@ public class DefClase extends Nodo {
         ctx.tabla().cerrar();
     }
 
-    /** Pasada 3: valores iniciales de los atributos y cuerpos de constructores y métodos. */
     public void analizar(ContextoSemantico ctx) {
         InfoClase info = info(ctx);
         if (info == null) return;

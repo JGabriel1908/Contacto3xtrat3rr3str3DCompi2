@@ -10,7 +10,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.Simbolo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** Campo de una estructura. Si es arreglo, sus dimensiones deben ser constantes. */
 public class Campo extends Nodo {
 
     private final Tipo tipo;
@@ -36,7 +35,6 @@ public class Campo extends Nodo {
         return dimensiones;
     }
 
-    /** Pasada 2: resuelve el tipo, exige dimensiones constantes y agrega el campo a la estructura. */
     public void validar(ContextoSemantico ctx, InfoEstructura estructura) {
         Tipo resuelto = ctx.resolverTipo(tipo, this, true);
         for (Expresion dim : dimensiones) {

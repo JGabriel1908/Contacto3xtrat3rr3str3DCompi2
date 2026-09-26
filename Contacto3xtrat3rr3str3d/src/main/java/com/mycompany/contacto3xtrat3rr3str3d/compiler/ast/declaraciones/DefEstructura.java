@@ -11,10 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Definición de estructura (Y?). Es una instrucción porque también puede
- * declararse dentro de una función.
- */
+//Estructura y?
 public class DefEstructura extends Instruccion {
 
     private final String nombre;
@@ -34,7 +31,6 @@ public class DefEstructura extends Instruccion {
         return campos;
     }
 
-    /** Pasada 1: registra la estructura en el ámbito actual; null si el nombre ya está ocupado. */
     public InfoEstructura registrar(ContextoSemantico ctx) {
         TablaSimbolos tabla = ctx.tabla();
         if (tabla.buscarEstructura(nombre) != null) {
@@ -51,12 +47,10 @@ public class DefEstructura extends Instruccion {
         return info;
     }
 
-    /** Pasada 2: valida cada campo y lo agrega a la estructura. */
     public void validarCampos(ContextoSemantico ctx, InfoEstructura info) {
         campos.forEach(c -> c.validar(ctx, info));
     }
 
-    /** Una estructura no puede contenerse a sí misma (directa o indirectamente): su tamaño sería infinito. */
     public void verificarCiclo(ContextoSemantico ctx, InfoEstructura info) {
         if (contiene(ctx, info, nombre, new HashSet<>())) {
             ctx.error(this, "La estructura '" + nombre + "' se contiene a sí misma");
@@ -75,7 +69,6 @@ public class DefEstructura extends Instruccion {
         return false;
     }
 
-    /** Estructura declarada dentro de una función (Y?): se registra y valida en el ámbito actual. */
     @Override
     public void analizar(ContextoSemantico ctx) {
         InfoEstructura info = registrar(ctx);

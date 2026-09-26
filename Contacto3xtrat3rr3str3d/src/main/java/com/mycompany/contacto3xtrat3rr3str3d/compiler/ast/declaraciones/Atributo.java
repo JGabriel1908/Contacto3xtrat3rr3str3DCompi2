@@ -10,7 +10,7 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.Simbolo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** Atributo de una clase de Zetariano. */
+//Atributo para xetariano
 public class Atributo extends Nodo {
 
     private final Modificador modificador;
@@ -34,7 +34,6 @@ public class Atributo extends Nodo {
         return nombre;
     }
 
-    /** Pasada 2: resuelve el tipo y lo agrega a la clase (sin repetir nombres). */
     public void validar(ContextoSemantico ctx, InfoClase clase) {
         Tipo resuelto = ctx.resolverTipo(tipo, this, true);
         Simbolo s = new Simbolo(nombre, Categoria.ATRIBUTO, resuelto, this);

@@ -32,12 +32,10 @@ public class Parametro extends Nodo {
         return modo;
     }
 
-    /** Pasada 2: verifica que el tipo exista. */
     public void validarTipo(ContextoSemantico ctx) {
         ctx.resolverTipo(tipo, this, true);
     }
 
-    /** Pasada 3: declara el parámetro en el ámbito de la función. */
     public void declarar(ContextoSemantico ctx) {
         Tipo resuelto = ctx.resolverTipo(tipo, this, false);
         if (!ctx.tabla().declarar(new Simbolo(nombre, Categoria.PARAMETRO, resuelto, this))) {

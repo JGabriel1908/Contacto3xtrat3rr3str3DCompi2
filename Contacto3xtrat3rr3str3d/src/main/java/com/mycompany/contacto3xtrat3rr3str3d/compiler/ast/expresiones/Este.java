@@ -4,7 +4,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/** this */
 public class Este extends Expresion {
 
     public Este(Ubicacion ubicacion) {

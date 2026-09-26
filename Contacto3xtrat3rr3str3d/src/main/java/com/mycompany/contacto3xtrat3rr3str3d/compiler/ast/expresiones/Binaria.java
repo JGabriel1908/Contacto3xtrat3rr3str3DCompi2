@@ -31,7 +31,6 @@ public class Binaria extends Expresion {
         return resultado(r);
     }
 
-    /** Solo operaciones aritméticas entre enteros constantes. */
     @Override
     public Object valorConstante() {
         if (izquierda.valorConstante() instanceof Integer x && derecha.valorConstante() instanceof Integer y) {

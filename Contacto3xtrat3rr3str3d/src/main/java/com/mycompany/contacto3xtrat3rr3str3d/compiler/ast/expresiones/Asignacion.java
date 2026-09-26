@@ -5,7 +5,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.TablaCompatibilidad;
 
-/** destino = valor, o destino op= valor (Zetariano). */
 public class Asignacion extends Expresion {
 
     private final Expresion destino;

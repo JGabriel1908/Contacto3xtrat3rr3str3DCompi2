@@ -26,7 +26,6 @@ public class DefMetodo extends Nodo {
         this.cuerpo = cuerpo;
     }
 
-    /** Tipo.VACIO para void. */
     public Tipo getTipoRetorno() {
         return tipoRetorno;
     }
@@ -39,7 +38,6 @@ public class DefMetodo extends Nodo {
         return parametros;
     }
 
-    /** Pasada 2: tipos existentes y firma (nombre + tipos de parámetros) sin repetir. */
     public void validarFirma(ContextoSemantico ctx, InfoClase clase) {
         ctx.resolverTipo(tipoRetorno, this, true);
         parametros.forEach(p -> p.validarTipo(ctx));
@@ -54,7 +52,6 @@ public class DefMetodo extends Nodo {
         clase.agregarMetodo(this);
     }
 
-    /** Pasada 3: analiza el cuerpo. */
     public void analizar(ContextoSemantico ctx) {
         ctx.analizarFuncion(nombre, parametros, ctx.resolverTipo(tipoRetorno, this, false), cuerpo, this,
                 "El método '" + nombre + "'");

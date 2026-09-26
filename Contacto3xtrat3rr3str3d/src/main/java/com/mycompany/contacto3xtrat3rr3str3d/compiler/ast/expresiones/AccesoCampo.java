@@ -7,7 +7,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.InfoEstructura;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.Simbolo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/** objeto.campo (campo de estructura o atributo de objeto) */
 public class AccesoCampo extends Expresion {
 
     private final Expresion objeto;

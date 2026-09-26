@@ -1,6 +1,6 @@
 package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.declaraciones;
 
-/** Modificador de acceso de Zetariano (el encapsulamiento se valida en el proyecto 2). */
+//Modificador para el zetariano
 public enum Modificador {
     PUBLICO("public"),
     PRIVADO("private"),

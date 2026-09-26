@@ -5,7 +5,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.TablaCompatibilidad;
 
-/** x++, x--, ++x, --x */
 public class Incremento extends Expresion {
 
     private final Expresion destino;

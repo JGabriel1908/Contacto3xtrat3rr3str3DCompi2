@@ -5,7 +5,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.Simbolo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/** Referencia a una variable, parámetro o atributo por su nombre. */
 public class Identificador extends Expresion {
 
     private final String nombre;

@@ -7,7 +7,7 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones.Bloque;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** Función global de Y?. */
+//Funcion global de Y
 public class DefFuncion extends Nodo {
 
     private final String nombre;
@@ -31,12 +31,10 @@ public class DefFuncion extends Nodo {
         return parametros;
     }
 
-    /** Tipo.VACIO si no retorna nada. */
     public Tipo getTipoRetorno() {
         return tipoRetorno;
     }
 
-    /** Pasada 1: registra la función; los nombres deben ser únicos en todo el proyecto. */
     public void registrar(ContextoSemantico ctx) {
         DefFuncion previa = ctx.tabla().buscarFuncion(nombre);
         if (previa != null) {
@@ -46,13 +44,11 @@ public class DefFuncion extends Nodo {
         ctx.tabla().registrarFuncion(this);
     }
 
-    /** Pasada 2: verifica los tipos de los parámetros y del retorno. */
     public void validarFirma(ContextoSemantico ctx) {
         parametros.forEach(p -> p.validarTipo(ctx));
         ctx.resolverTipo(tipoRetorno, this, true);
     }
 
-    /** Pasada 3: analiza el cuerpo. */
     public void analizar(ContextoSemantico ctx) {
         ctx.analizarFuncion(nombre, parametros, ctx.resolverTipo(tipoRetorno, this, false), cuerpo, this,
                 "La función '" + nombre + "'");

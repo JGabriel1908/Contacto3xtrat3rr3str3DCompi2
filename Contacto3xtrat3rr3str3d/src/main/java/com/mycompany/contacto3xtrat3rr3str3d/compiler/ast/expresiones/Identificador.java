@@ -20,7 +20,6 @@ public class Identificador extends Expresion {
 
     private Simbolo simbolo;
 
-    /** Símbolo al que hace referencia (lo asigna el análisis semántico). */
     public Simbolo getSimbolo() {
         return simbolo;
     }

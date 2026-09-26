@@ -4,9 +4,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/**
- * Valor constante. El valor es Integer, Double, String, Character, Boolean o null (nulo).
- */
 public class Literal extends Expresion {
 
     private final Object valor;

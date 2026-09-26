@@ -7,7 +7,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.InfoClase;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** objeto.metodo(argumentos) */
 public class LlamadaMetodo extends Expresion {
 
     private final Expresion objeto;
@@ -23,7 +22,6 @@ public class LlamadaMetodo extends Expresion {
 
     private DefMetodo declaracion;
 
-    /** Método elegido tras resolver la sobrecarga (lo asigna el análisis semántico). */
     public DefMetodo getDeclaracion() {
         return declaracion;
     }

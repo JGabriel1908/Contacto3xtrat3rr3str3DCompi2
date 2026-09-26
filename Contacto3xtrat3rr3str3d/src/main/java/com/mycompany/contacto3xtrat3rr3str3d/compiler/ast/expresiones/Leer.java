@@ -4,7 +4,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
-/** leer() / readln(): devuelve la línea leída como cadena. */
 public class Leer extends Expresion {
 
     public Leer(Ubicacion ubicacion) {
@@ -12,7 +11,6 @@ public class Leer extends Expresion {
         setTipo(Tipo.CADENA);
     }
 
-    /** Como expresión suelta devuelve cadena; al asignarse se convierte al tipo del destino. */
     @Override
     public Tipo analizar(ContextoSemantico ctx) {
         return resultado(Tipo.CADENA);

@@ -9,9 +9,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.declaraciones.DefMetod
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/**
- * nombre(argumentos): función de un .y, o dentro de una clase, método del propio objeto.
- */
 public class LlamadaFuncion extends Expresion {
 
     private final String nombre;
@@ -29,10 +26,6 @@ public class LlamadaFuncion extends Expresion {
 
     private Nodo declaracion;
 
-    /**
-     * DefFuncion (función de un .y) o DefMetodo (método del propio objeto en Zetariano).
-     * Lo asigna el análisis semántico.
-     */
     public Nodo getDeclaracion() {
         return declaracion;
     }
@@ -42,7 +35,7 @@ public class LlamadaFuncion extends Expresion {
         List<Tipo> tipos = ctx.tiposArgumentos(argumentos);
 
         if (ctx.getClaseActual() != null) {
-            // Zetariano: una llamada sin objeto es un método de la propia clase
+            //En el zetariano una llamada sin objeto es una llamada en la clase actual
             DefMetodo metodo = ctx.resolverMetodo(ctx.getClaseActual(), nombre, tipos, this);
             if (metodo == null) return resultado(Tipo.ERROR);
             declaracion = metodo;

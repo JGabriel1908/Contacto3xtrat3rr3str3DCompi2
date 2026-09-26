@@ -4,7 +4,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** Secuencia de instrucciones con su propio ámbito. */
 public class Bloque extends Instruccion {
 
     private final List<Instruccion> instrucciones;

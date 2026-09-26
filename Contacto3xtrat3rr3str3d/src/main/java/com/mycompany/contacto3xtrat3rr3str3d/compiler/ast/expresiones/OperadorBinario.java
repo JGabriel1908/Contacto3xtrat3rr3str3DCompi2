@@ -25,7 +25,6 @@ public enum OperadorBinario {
         return simbolo;
     }
 
-    /** Operador a partir del texto del token. En Pig Latin '=' dentro de una expresión es igualdad. */
     public static OperadorBinario desdeSimbolo(String simbolo) {
         if (simbolo.equals("=")) return IGUAL;
         for (OperadorBinario op : values()) {
@@ -34,7 +33,6 @@ public enum OperadorBinario {
         throw new IllegalArgumentException("Operador binario desconocido: " + simbolo);
     }
 
-    /** Operador de una asignación compuesta: "+=" -> SUMA. */
     public static OperadorBinario desdeAsignacionCompuesta(String simbolo) {
         return desdeSimbolo(simbolo.substring(0, simbolo.length() - 1));
     }

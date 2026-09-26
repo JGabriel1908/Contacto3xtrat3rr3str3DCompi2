@@ -5,7 +5,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** new int[3][3] / new int[]{1, 2, 3} (Zetariano) */
 public class NuevoArreglo extends Expresion {
 
     private final Tipo tipoElemento;

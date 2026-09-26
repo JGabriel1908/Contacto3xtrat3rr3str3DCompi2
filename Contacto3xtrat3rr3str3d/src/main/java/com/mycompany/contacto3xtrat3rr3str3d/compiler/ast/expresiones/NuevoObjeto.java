@@ -7,7 +7,6 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.InfoClase;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
-/** new Clase(args) / novus Clase(args). El objeto se crea en el heap. */
 public class NuevoObjeto extends Expresion {
 
     private final String clase;

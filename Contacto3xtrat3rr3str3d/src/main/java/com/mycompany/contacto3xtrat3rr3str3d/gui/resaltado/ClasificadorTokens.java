@@ -7,18 +7,12 @@ import java.util.Set;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Vocabulary;
 
-/**
- * Asigna una {@link Categoria} a cada tipo de token de los lexers generados por ANTLR,
- * usando los nombres de los tokens definidos en las gramáticas.
- */
+
 public final class ClasificadorTokens {
 
     private static final Set<String> TIPOS = Set.of(
-            // Y?
             "ENTERO", "FLOTANTE", "CADENA", "CARACTER", "BOOL",
-            // Zetariano
             "INT", "DOUBLE", "CHAR", "BOOLEAN", "STRING", "VOID",
-            // Pig Latin
             "NUMERUS", "TEXTUM", "DECIMALIS", "LITTERA");
 
     private static final Set<String> FUNCIONES = Set.of(
@@ -32,7 +26,6 @@ public final class ClasificadorTokens {
     private ClasificadorTokens() {
     }
 
-    /** Arreglo indexado por tipo de token. */
     public static synchronized Categoria[] categorias(Lenguaje lenguaje) {
         return CACHE.computeIfAbsent(lenguaje, ClasificadorTokens::construir);
     }
@@ -60,9 +53,8 @@ public final class ClasificadorTokens {
         if (nombre.equals("ERROR_CHAR")) return Categoria.ERROR;
         if (nombre.equals("ID")) return Categoria.IDENTIFICADOR;
         if (literal != null && literal.length() > 2) {
-            // Los literales vienen entre comillas simples: 'si', '+', ...
             return Character.isLetter(literal.charAt(1)) ? Categoria.PALABRA_RESERVADA : Categoria.OPERADOR;
         }
-        return Categoria.NORMAL; // NEWLINE, INDENT, DEDENT...
+        return Categoria.NORMAL; 
     }
 }

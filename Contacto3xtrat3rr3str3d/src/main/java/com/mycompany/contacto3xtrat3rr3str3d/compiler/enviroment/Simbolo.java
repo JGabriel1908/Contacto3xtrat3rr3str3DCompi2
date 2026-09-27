@@ -36,6 +36,7 @@ public class Simbolo {
     private final Categoria categoria;
     private final Tipo tipo;
     private final Nodo declaracion;
+    private int desplazamiento;
 
     public Simbolo(String nombre, Categoria categoria, Tipo tipo, Nodo declaracion) {
         this.nombre = nombre;
@@ -55,6 +56,15 @@ public class Simbolo {
     /** Nodo que declara el símbolo (DeclaracionVariable, Parametro, Atributo, Campo, DefFuncion...). */
     public Nodo getDeclaracion() {
         return declaracion;
+    }
+
+    /** Posición en el marco de la función (variables y parámetros) o en el objeto (atributos). */
+    public int getDesplazamiento() {
+        return desplazamiento;
+    }
+
+    public void setDesplazamiento(int desplazamiento) {
+        this.desplazamiento = desplazamiento;
     }
 
     public Ubicacion getUbicacion() {

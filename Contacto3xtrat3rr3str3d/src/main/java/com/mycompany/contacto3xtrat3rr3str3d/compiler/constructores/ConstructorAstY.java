@@ -41,9 +41,7 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones.Si;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Convierte el árbol de ANTLR de un archivo .y en el AST común.
- */
+
 public class ConstructorAstY extends YParserBaseVisitor<Nodo> {
 
     private final ContextoConstruccion ctx;
@@ -65,8 +63,6 @@ public class ConstructorAstY extends YParserBaseVisitor<Nodo> {
         }
         return new UnidadY(ctx.ubicacion(programa), estructuras, funciones);
     }
-
-    // ================================================================ declaraciones
 
     private DefEstructura estructura(YParser.DefEstructuraContext c) {
         List<Campo> campos = new ArrayList<>();
@@ -99,8 +95,6 @@ public class ConstructorAstY extends YParserBaseVisitor<Nodo> {
         YParser.ParamValorContext v = (YParser.ParamValorContext) p;
         return new Parametro(ctx.ubicacion(v), tipoPrimitivo(v.tipoPrimitivo()), v.ID().getText(), ModoPaso.VALOR);
     }
-
-    // ================================================================ instrucciones
 
     private Bloque bloque(YParser.BloqueContext c) {
         return new Bloque(ctx.ubicacion(c), instrucciones(c.instruccion()));
@@ -166,7 +160,6 @@ public class ConstructorAstY extends YParserBaseVisitor<Nodo> {
     @Override
     public Nodo visitInsCondicional(YParser.InsCondicionalContext c) {
         YParser.CondicionalContext si = c.condicional();
-        // La cadena si / sino / contrario se arma desde el final como condicionales anidados
         Instruccion sino = si.contrario() == null ? null : bloque(si.contrario().bloque());
         List<YParser.SinoSiContext> ramas = si.sinoSi();
         for (int i = ramas.size() - 1; i >= 0; i--) {
@@ -258,8 +251,6 @@ public class ConstructorAstY extends YParserBaseVisitor<Nodo> {
         for (YParser.DimensionContext d : lista) resultado.add(expr(d.expr()));
         return resultado;
     }
-
-    // ================================================================ expresiones
 
     private Expresion expr(YParser.ExprContext c) {
         return (Expresion) visit(c);
@@ -356,8 +347,6 @@ public class ConstructorAstY extends YParserBaseVisitor<Nodo> {
     private Binaria binaria(YParser.ExprContext c, String operador, YParser.ExprContext izq, YParser.ExprContext der) {
         return new Binaria(ctx.ubicacion(c), OperadorBinario.desdeSimbolo(operador), expr(izq), expr(der));
     }
-
-    // ================================================================ tipos
 
     private Tipo tipo(YParser.TipoContext c) {
         return c.tipoPrimitivo() != null ? tipoPrimitivo(c.tipoPrimitivo()) : Tipo.estructura(c.ID().getText());

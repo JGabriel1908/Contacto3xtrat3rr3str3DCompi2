@@ -14,11 +14,8 @@ public final class Tipo {
         BOOLEANO("booleano"),
         VACIO("vacio"),
         NULO("nulo"),
-        /** Estructura definida en un archivo .y */
         ESTRUCTURA("estructura"),
-        /** Clase definida en un archivo .z */
         CLASE("clase"),
-        /** Nombre de tipo sin resolver (Pig Latin: puede ser estructura o clase) */
         NOMBRADO("nombrado"),
         ERROR("error");
 

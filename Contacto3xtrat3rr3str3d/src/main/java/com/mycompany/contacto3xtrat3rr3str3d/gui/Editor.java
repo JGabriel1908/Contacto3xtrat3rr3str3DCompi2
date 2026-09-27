@@ -68,18 +68,19 @@ public class Editor extends JPanel {
     private final Timer temporizadorAnalisis;
     private final List<Marca> marcas = new ArrayList<>();
     private boolean modificado;
+    private Archivos.Contenido formato;
+    private long ultimaModificacion;
     private Runnable alCambiarEstado = () -> {
     };
     private Runnable alMoverCursor = () -> {
     };
 
-    public Editor(File archivo, String contenido, int tamanoFuente) {
+    public Editor(File archivo, Archivos.Contenido contenido, int tamanoFuente) {
         super(new BorderLayout());
         this.archivo = archivo;
         this.lenguaje = Lenguaje.desdeArchivo(archivo);
 
         texto = new JTextPane() {
-            // Sin ajuste de línea: la vista crece horizontalmente y aparece la barra de desplazamiento
             @Override
             public boolean getScrollableTracksViewportWidth() {
                 Container padre = getParent();
@@ -101,8 +102,10 @@ public class Editor extends JPanel {
         texto.setFocusTraversalKeysEnabled(false);
         texto.setBorder(BorderFactory.createEmptyBorder(2, 6, 2, 6));
         texto.setFont(Tema.fuenteEditor(tamanoFuente));
-        texto.setText(contenido);
+        texto.setText(contenido.texto());
         texto.setCaretPosition(0);
+        formato = contenido;
+        ultimaModificacion = archivo.lastModified();
 
         resaltador = new Resaltador(texto);
         numeros = new NumerosLinea(texto);
@@ -118,7 +121,6 @@ public class Editor extends JPanel {
         temporizadorAnalisis = new Timer(ESPERA_ANALISIS_MS, e -> analizarEnVivo());
         temporizadorAnalisis.setRepeats(false);
 
-        // Los oyentes se agregan después de cargar el contenido para no marcarlo como modificado
         texto.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -135,7 +137,6 @@ public class Editor extends JPanel {
             }
         });
         texto.getDocument().addUndoableEditListener(e -> {
-            // Los cambios de estilo del coloreado no se deshacen
             if (e.getEdit() instanceof AbstractDocument.DefaultDocumentEvent evento
                     && evento.getType() == DocumentEvent.EventType.CHANGE) {
                 return;
@@ -151,8 +152,6 @@ public class Editor extends JPanel {
         resaltador.setLenguaje(lenguaje);
         analizarEnVivo();
     }
-
-    // ------------------------------------------------------------------ estado
 
     public File getArchivo() {
         return archivo;
@@ -182,7 +181,6 @@ public class Editor extends JPanel {
         this.alMoverCursor = accion;
     }
 
-    /** Cambia el archivo asociado (guardar como / renombrar) y actualiza el lenguaje. */
     public void setArchivo(File nuevo) {
         this.archivo = nuevo;
         Lenguaje nuevoLenguaje = Lenguaje.desdeArchivo(nuevo);
@@ -195,8 +193,25 @@ public class Editor extends JPanel {
     }
 
     public void guardar() throws IOException {
-        Archivos.escribir(archivo, getTexto());
+        Archivos.guardar(archivo, new Archivos.Contenido(getTexto(), formato.codificacion(), formato.finLinea()));
+        ultimaModificacion = archivo.lastModified();
         setModificado(false);
+    }
+
+    public boolean cambioEnDisco() {
+        return archivo.lastModified() != ultimaModificacion;
+    }
+
+    public void recargar() throws IOException {
+        Archivos.Contenido contenido = Archivos.abrir(archivo);
+        int posicion = texto.getCaretPosition();
+        texto.setText(contenido.texto());
+        texto.setCaretPosition(Math.min(posicion, texto.getDocument().getLength()));
+        historial.discardAllEdits();
+        formato = contenido;
+        ultimaModificacion = archivo.lastModified();
+        setModificado(false);
+        analizarEnVivo();
     }
 
     private void setModificado(boolean valor) {
@@ -210,8 +225,6 @@ public class Editor extends JPanel {
         setModificado(true);
         temporizadorAnalisis.restart();
     }
-
-    // ------------------------------------------------------------------ acciones
 
     public void deshacer() {
         try {
@@ -243,7 +256,6 @@ public class Editor extends JPanel {
         return pos - raiz.getElement(raiz.getElementIndex(pos)).getStartOffset() + 1;
     }
 
-    /** Mueve el cursor a una línea (base 1) y columna (base 0). */
     public void irA(int linea, int columna) {
         Element raiz = texto.getDocument().getDefaultRootElement();
         Element elemento = raiz.getElement(Math.max(0, Math.min(linea - 1, raiz.getElementCount() - 1)));
@@ -263,8 +275,6 @@ public class Editor extends JPanel {
         enfocar();
     }
 
-    // ------------------------------------------------------------------ errores
-
     private void analizarEnVivo() {
         temporizadorAnalisis.stop();
         if (lenguaje == null) {
@@ -274,7 +284,6 @@ public class Editor extends JPanel {
         marcarErrores(AnalizadorSintactico.analizar(getTexto(), lenguaje, archivo.getPath()).errores());
     }
 
-    /** Subraya los errores en el texto y los marca en el margen. */
     public void marcarErrores(List<ErrorCompilacion> errores) {
         Highlighter resaltador = texto.getHighlighter();
         for (Marca m : marcas) resaltador.removeHighlight(m.etiqueta());
@@ -326,8 +335,6 @@ public class Editor extends JPanel {
         return null;
     }
 
-    // ------------------------------------------------------------------ teclado
-
     private void configurarTeclas() {
         registrar(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "indentar", this::indentar);
         registrar(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "nuevaLinea", this::nuevaLinea);
@@ -343,13 +350,11 @@ public class Editor extends JPanel {
         });
     }
 
-    /** Tab: inserta espacios hasta el siguiente múltiplo de 4. */
     private void indentar() {
         int columna = getColumna() - 1;
         texto.replaceSelection(" ".repeat(SANGRIA.length() - columna % SANGRIA.length()));
     }
 
-    /** Enter: conserva la indentación y la aumenta si la línea abre un bloque. */
     private void nuevaLinea() {
         try {
             Document doc = texto.getDocument();
@@ -387,9 +392,6 @@ public class Editor extends JPanel {
         }
     }
 
-    // ------------------------------------------------------------------ pintado
-
-    /** Pinta el fondo de la línea del cursor antes que el texto y las selecciones. */
     private final class ResaltadorLineaActual extends DefaultHighlighter {
         @Override
         public void paint(Graphics g) {
@@ -406,7 +408,6 @@ public class Editor extends JPanel {
         }
     }
 
-    /** Subrayado ondulado para los errores. */
     private static final class PintorOndulado extends LayeredHighlighter.LayerPainter {
         private final Color color;
 

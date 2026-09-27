@@ -1,8 +1,4 @@
-/*
- * Parser del lenguaje Zetariano  (archivos .z)
- * Cada archivo contiene una única clase con el mismo nombre que el archivo
- * (esto último se valida en el análisis semántico).
- */
+
 parser grammar ZetarianoParser;
 
 options { tokenVocab = ZetarianoLexer; }
@@ -11,7 +7,6 @@ programa
     : clase EOF
     ;
 
-// ================================================================ clase y miembros
 
 clase
     : modificador? CLASS ID LLA_IZQ miembro* LLA_DER
@@ -54,7 +49,6 @@ parametro
     : tipo ID
     ;
 
-// ================================================================ sentencias
 
 bloque
     : LLA_IZQ sentencia* LLA_DER
@@ -112,9 +106,6 @@ forActualizacion
     : expr (COMA expr)*
     ;
 
-// ================================================================ expresiones
-// Precedencia de mayor a menor (igual que Java)
-
 expr
     : primario                                                                # exprPrimario
     | expr PUNTO ID PAR_IZQ argumentos? PAR_DER                               # exprLlamadaMetodo
@@ -157,8 +148,6 @@ literal
     | FALSE
     | NULL
     ;
-
-// ================================================================ tipos
 
 tipo
     : tipoBase (COR_IZQ COR_DER)*

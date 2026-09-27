@@ -56,6 +56,13 @@
 /home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/instrucciones/Romper.java
 /home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/instrucciones/Seleccion.java
 /home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/instrucciones/Si.java
+/home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/ContextoC3D.java
+/home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/Cuarteta.java
+/home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/Direccion.java
+/home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/ErrorGeneracion.java
+/home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/GeneradorC3D.java
+/home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/Nativas.java
+/home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/TraductorC.java
 /home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/constructores/ConstructorAstPigLatin.java
 /home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/constructores/ConstructorAstY.java
 /home/gabrielh/Escritorio/Universidad/Compi2/PrimerProyecto/Contacto3xtrat3rr3str3DCompi2/Contacto3xtrat3rr3str3d/src/main/java/com/mycompany/contacto3xtrat3rr3str3d/compiler/constructores/ConstructorAstZetariano.java

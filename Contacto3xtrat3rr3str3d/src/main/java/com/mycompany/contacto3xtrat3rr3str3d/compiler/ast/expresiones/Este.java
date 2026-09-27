@@ -2,6 +2,7 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones;
 
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
 public class Este extends Expresion {
@@ -17,5 +18,10 @@ public class Este extends Expresion {
             return resultado(Tipo.ERROR);
         }
         return resultado(Tipo.clase(ctx.getClaseActual().getNombre()));
+    }
+
+    @Override
+    public String generar(ContextoC3D ctx) {
+        return ctx.este();
     }
 }

@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
-/**
- * Modelo de la tabla de errores del panel inferior.
- */
 public class TablaErrores extends AbstractTableModel {
 
     private static final String[] COLUMNAS = {"#", "Tipo", "Descripción", "Archivo", "Línea", "Columna"};

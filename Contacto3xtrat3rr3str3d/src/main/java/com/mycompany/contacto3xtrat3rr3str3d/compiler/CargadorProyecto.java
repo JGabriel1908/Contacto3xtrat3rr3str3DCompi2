@@ -23,23 +23,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Lee, analiza y convierte a AST uno o varios archivos fuente.
- *
- * Un proyecto parte de un archivo .pig: se construye su AST y el de cada archivo .y / .z
- * que importa (rutas relativas a la carpeta del .pig), y se unen en un {@link Programa}.
- */
 public final class CargadorProyecto {
 
-    /** Fuente del contenido de los archivos (la IDE usa el texto de los editores abiertos). */
     @FunctionalInterface
     public interface LectorArchivos {
         String leer(File archivo) throws IOException;
     }
 
-    /**
-     * @param raiz Programa, Unidad, o null si hubo errores léxicos/sintácticos en el archivo principal
-     */
     public record Resultado(Nodo raiz, List<ErrorCompilacion> errores) {
         public boolean exitoso() {
             return raiz != null && errores.isEmpty();
@@ -49,14 +39,12 @@ public final class CargadorProyecto {
     private CargadorProyecto() {
     }
 
-    /** Construye el AST de un solo archivo, sin resolver importaciones. */
     public static Resultado cargarArchivo(File archivo, LectorArchivos lector) {
         List<ErrorCompilacion> errores = new ArrayList<>();
         Unidad unidad = construirUnidad(archivo, lector, errores);
         return new Resultado(unidad, errores);
     }
 
-    /** Construye el programa completo a partir del archivo .pig principal. */
     public static Resultado cargarProyecto(File principal, LectorArchivos lector) {
         List<ErrorCompilacion> errores = new ArrayList<>();
         Unidad unidad = construirUnidad(principal, lector, errores);
@@ -93,7 +81,6 @@ public final class CargadorProyecto {
                 case UnidadY y -> archivosY.add(y);
                 case UnidadZetariano z -> archivosZ.add(z);
                 case null, default -> {
-                    // Sus errores ya quedaron registrados
                 }
             }
         }
@@ -105,7 +92,6 @@ public final class CargadorProyecto {
                 imp.getUbicacion().linea(), imp.getUbicacion().columna(), "import".length());
     }
 
-    /** Analiza un archivo y construye su AST; devuelve null si tiene errores léxicos o sintácticos. */
     private static Unidad construirUnidad(File archivo, LectorArchivos lector, List<ErrorCompilacion> errores) {
         String ruta = archivo.getPath();
         Lenguaje lenguaje = Lenguaje.desdeArchivo(archivo);

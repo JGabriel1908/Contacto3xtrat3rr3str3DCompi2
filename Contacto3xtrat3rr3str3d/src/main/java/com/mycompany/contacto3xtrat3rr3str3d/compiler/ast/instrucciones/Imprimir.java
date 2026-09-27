@@ -3,6 +3,7 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
@@ -25,5 +26,11 @@ public class Imprimir extends Instruccion {
                 ctx.error(e, "No se puede imprimir un valor de tipo " + ctx.nombreTipo(this, t));
             }
         }
+    }
+
+    @Override
+    public void generar(ContextoC3D ctx) {
+        for (Expresion e : valores) ctx.imprimir(e.generar(ctx), e.getTipo(), getLenguaje());
+        if (saltoLinea) ctx.saltoDeLinea();
     }
 }

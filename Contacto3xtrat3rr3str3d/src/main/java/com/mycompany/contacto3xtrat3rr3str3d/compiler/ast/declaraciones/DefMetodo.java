@@ -4,6 +4,7 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Nodo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones.Bloque;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.InfoClase;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
@@ -55,5 +56,13 @@ public class DefMetodo extends Nodo {
     public void analizar(ContextoSemantico ctx) {
         ctx.analizarFuncion(nombre, parametros, ctx.resolverTipo(tipoRetorno, this, false), cuerpo, this,
                 "El método '" + nombre + "'");
+    }
+
+    /** Marco: [0] retorno, [1] this, luego parámetros y variables locales. */
+    public void generar(ContextoC3D ctx) {
+        ctx.iniciarFuncion(2);
+        parametros.forEach(p -> p.asignarDesplazamiento(ctx));
+        cuerpo.getInstrucciones().forEach(ctx::generar);
+        ctx.terminarFuncion(ctx.nombre(this));
     }
 }

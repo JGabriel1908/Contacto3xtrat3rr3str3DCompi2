@@ -16,13 +16,6 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
-/**
- * Coloreado de código en tiempo real.
- *
- * Cada vez que el documento cambia (con una pequeña espera para no recalcular en cada tecla)
- * se vuelve a ejecutar el lexer del lenguaje sobre todo el texto y se aplica el estilo de la
- * categoría de cada token directamente sobre el StyledDocument.
- */
 public class Resaltador {
 
     private static final int ESPERA_MS = 80;
@@ -51,7 +44,6 @@ public class Resaltador {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                // Cambios de estilo: los provoca el propio resaltador
             }
         });
     }
@@ -115,10 +107,6 @@ public class Resaltador {
         return false;
     }
 
-    /**
-     * ANTLR indexa por code points y Swing por caracteres UTF-16. Solo difieren si el texto
-     * tiene caracteres fuera del plano básico (p. ej. emojis); en ese caso se construye un mapa.
-     */
     private static int[] mapaPosiciones(String s) {
         int puntos = s.codePointCount(0, s.length());
         if (puntos == s.length()) return null;

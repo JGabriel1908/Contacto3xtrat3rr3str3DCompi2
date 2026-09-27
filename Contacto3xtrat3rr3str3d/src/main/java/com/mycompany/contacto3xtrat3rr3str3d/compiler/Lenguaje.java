@@ -13,9 +13,6 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-/**
- * Lenguajes soportados por el compilador, identificados por la extensión del archivo.
- */
 public enum Lenguaje {
     Y("Y?", "y"),
     ZETARIANO("Zetariano", "z"),
@@ -33,7 +30,6 @@ public enum Lenguaje {
         return nombre;
     }
 
-    /** Devuelve el lenguaje según la extensión, o null si no es un archivo del proyecto. */
     public static Lenguaje desdeArchivo(File archivo) {
         return archivo == null ? null : desdeNombre(archivo.getName());
     }
@@ -64,7 +60,6 @@ public enum Lenguaje {
         };
     }
 
-    /** Ejecuta la regla inicial del parser. */
     public ParseTree analizar(Parser parser) {
         return switch (this) {
             case Y -> ((YParser) parser).programa();
@@ -73,7 +68,6 @@ public enum Lenguaje {
         };
     }
 
-    /** Contenido inicial para un archivo nuevo de este lenguaje. */
     public String plantilla(String nombreBase) {
         return switch (this) {
             case Y -> "%funciones\n";

@@ -1,6 +1,7 @@
 package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones;
 
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
@@ -27,5 +28,10 @@ public class Bloque extends Instruccion {
     @Override
     public boolean siempreRetorna() {
         return instrucciones.stream().anyMatch(Instruccion::siempreRetorna);
+    }
+
+    @Override
+    public void generar(ContextoC3D ctx) {
+        instrucciones.forEach(ctx::generar);
     }
 }

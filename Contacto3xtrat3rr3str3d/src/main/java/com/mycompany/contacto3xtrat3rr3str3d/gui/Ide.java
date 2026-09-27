@@ -3,6 +3,11 @@ package com.mycompany.contacto3xtrat3rr3str3d.gui;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.CargadorProyecto;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ErrorCompilacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.Lenguaje;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Nodo;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Programa;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ErrorGeneracion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.GeneradorC3D;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.TablaSimbolos;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.AnalizadorSemantico;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.TablaCompatibilidad;
 import com.mycompany.contacto3xtrat3rr3str3d.gui.resaltado.Tema;
@@ -69,6 +74,11 @@ public class Ide extends JFrame {
             public void windowClosing(WindowEvent e) {
                 salir();
             }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                revisarCambiosExternos();
+            }
         });
         setSize(1200, 780);
         setMinimumSize(new Dimension(800, 500));
@@ -118,8 +128,7 @@ public class Ide extends JFrame {
         actualizarEstado();
     }
 
-    // ================================================================== interfaz
-
+    //Interfaz
     private JMenuBar crearMenu() {
         JMenuBar barra = new JMenuBar();
 
@@ -147,6 +156,7 @@ public class Ide extends JFrame {
 
         JMenu compilar = new JMenu("Compilar");
         compilar.add(item("Analizar", this::analizar));
+        compilar.add(item("Traducir", this::traducir));
         barra.add(compilar);
 
         JMenu ayuda = new JMenu("Ayuda");
@@ -182,8 +192,7 @@ public class Ide extends JFrame {
         return item;
     }
 
-    // ================================================================== pestañas
-
+    //Creo pestaas
     private Editor editorActual() {
         return pestanas.getSelectedComponent() instanceof Editor e ? e : null;
     }
@@ -209,14 +218,22 @@ public class Ide extends JFrame {
     }
 
     public void abrirArchivo(File archivo) {
+        archivo = archivo.getAbsoluteFile();
         Editor existente = buscarEditor(archivo);
         if (existente != null) {
             pestanas.setSelectedComponent(existente);
+            if (!existente.isModificado() && existente.cambioEnDisco() && archivo.isFile()) {
+                try {
+                    existente.recargar();
+                } catch (IOException ex) {
+                    error("No se pudo recargar " + archivo.getName() + ": " + ex.getMessage());
+                }
+            }
             return;
         }
-        String contenido;
+        Archivos.Contenido contenido;
         try {
-            contenido = Archivos.leer(archivo);
+            contenido = Archivos.abrir(archivo);
         } catch (IOException ex) {
             error("No se pudo abrir " + archivo.getName() + ": " + ex.getMessage());
             return;
@@ -232,6 +249,23 @@ public class Ide extends JFrame {
         tarjetasCentro.show(centro, "editores");
         editor.enfocar();
         recordarDirectorio(archivo);
+        if (arbol.getRaiz() == null) {
+            abrirEnArbol(archivo.getParentFile());
+        } else if (Archivos.contiene(arbol.getRaiz(), archivo)) {
+            arbol.seleccionar(archivo);
+        }
+    }
+
+    private void revisarCambiosExternos() {
+        for (Editor e : editores()) {
+            if (e.isModificado() || !e.cambioEnDisco() || !e.getArchivo().isFile()) continue;
+            try {
+                e.recargar();
+            } catch (IOException ignorada) {
+                // se conserva el texto del editor
+            }
+        }
+        arbol.actualizar();
     }
 
     private void actualizarPestana(Editor editor) {
@@ -242,7 +276,6 @@ public class Ide extends JFrame {
         actualizarEstado();
     }
 
-    /** Cierra la pestaña; devuelve false si el usuario canceló. */
     private boolean cerrar(Editor editor) {
         if (editor.isModificado()) {
             pestanas.setSelectedComponent(editor);
@@ -273,7 +306,6 @@ public class Ide extends JFrame {
         setTitle(e.getNombre() + " - " + TITULO);
     }
 
-    // ================================================================== archivos
 
     private void nuevoArchivo() {
         if (arbol.getRaiz() != null) {
@@ -307,8 +339,9 @@ public class Ide extends JFrame {
     private void abrirArchivo() {
         JFileChooser selector = selector("Abrir archivo");
         selector.setFileFilter(filtroProyecto());
+        selector.setMultiSelectionEnabled(true);
         if (selector.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
-        abrirArchivo(selector.getSelectedFile());
+        for (File f : selector.getSelectedFiles()) abrirArchivo(f);
     }
 
     private void abrirCarpeta() {
@@ -316,9 +349,18 @@ public class Ide extends JFrame {
         selector.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (selector.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
         File carpeta = selector.getSelectedFile();
+        if (!carpeta.isDirectory()) {
+            error("La carpeta " + carpeta.getPath() + " no existe.");
+            return;
+        }
+        abrirEnArbol(carpeta);
+    }
+
+    private void abrirEnArbol(File carpeta) {
+        carpeta = carpeta.getAbsoluteFile();
         arbol.setRaiz(carpeta);
-        preferencias.put(CLAVE_CARPETA, carpeta.getAbsolutePath());
-        preferencias.put(CLAVE_DIRECTORIO, carpeta.getAbsolutePath());
+        preferencias.put(CLAVE_CARPETA, carpeta.getPath());
+        preferencias.put(CLAVE_DIRECTORIO, carpeta.getPath());
     }
 
     private void guardar() {
@@ -327,9 +369,16 @@ public class Ide extends JFrame {
     }
 
     private boolean guardar(Editor editor) {
+        if (editor.cambioEnDisco() && editor.getArchivo().exists()) {
+            int r = JOptionPane.showConfirmDialog(this,
+                    editor.getNombre() + " se modificó fuera de la IDE. ¿Reemplazarlo con el texto del editor?",
+                    "Archivo modificado", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (r != JOptionPane.YES_OPTION) return false;
+        }
         try {
             editor.guardar();
             arbol.actualizar();
+            estado.setText("Guardado: " + editor.getArchivo().getPath());
             return true;
         } catch (IOException ex) {
             error("No se pudo guardar " + editor.getNombre() + ": " + ex.getMessage());
@@ -341,28 +390,58 @@ public class Ide extends JFrame {
         Editor editor = editorActual();
         if (editor == null) return;
         JFileChooser selector = selector("Guardar como");
+        selector.setFileFilter(filtroProyecto());
         selector.setSelectedFile(editor.getArchivo());
         if (selector.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
-        File destino = selector.getSelectedFile();
+        File destino = Archivos.conExtension(selector.getSelectedFile().getAbsoluteFile(),
+                Archivos.extension(editor.getArchivo()));
         if (Archivos.mismoArchivo(destino, editor.getArchivo())) {
             guardar(editor);
             return;
         }
+        if (destino.isDirectory()) {
+            error("Ya existe una carpeta llamada " + destino.getName() + ".");
+            return;
+        }
         if (destino.exists() && !confirmarSobrescribir(destino)) return;
         Editor otro = buscarEditor(destino);
-        if (otro != null) pestanas.remove(otro);
+        if (otro != null && !cerrarSinGuardar(otro)) return;
+        File anterior = editor.getArchivo();
         editor.setArchivo(destino);
-        guardar(editor);
+        try {
+            editor.guardar();
+        } catch (IOException ex) {
+            editor.setArchivo(anterior);
+            error("No se pudo guardar " + destino.getName() + ": " + ex.getMessage());
+            return;
+        }
         recordarDirectorio(destino);
+        arbol.actualizar();
+        if (arbol.getRaiz() != null && Archivos.contiene(arbol.getRaiz(), destino)) arbol.seleccionar(destino);
+        estado.setText("Guardado: " + destino.getPath());
+    }
+
+    private boolean cerrarSinGuardar(Editor editor) {
+        if (editor.isModificado()) {
+            int r = JOptionPane.showConfirmDialog(this, editor.getNombre()
+                    + " está abierto con cambios sin guardar que se perderán. ¿Continuar?",
+                    "Confirmar", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (r != JOptionPane.YES_OPTION) return false;
+        }
+        pestanas.remove(editor);
+        return true;
     }
 
     private void guardarTodo() {
+        int guardados = 0;
         for (Editor e : editores()) {
-            if (e.isModificado() && !guardar(e)) return;
+            if (!e.isModificado()) continue;
+            if (!guardar(e)) return;
+            guardados++;
         }
+        estado.setText(guardados == 0 ? "No hay cambios por guardar" : "Se guardaron " + guardados + " archivo(s)");
     }
 
-    /** Descarga el archivo seleccionado en el explorador, o si no hay, el de la pestaña actual. */
     private void descargarArchivo() {
         File seleccion = arbol.getSeleccionado();
         if (seleccion != null && seleccion.isFile()) {
@@ -374,7 +453,6 @@ public class Ide extends JFrame {
         }
     }
 
-    /** Descarga la carpeta seleccionada en el explorador, o si no hay, la carpeta abierta. */
     private void descargarCarpeta() {
         File seleccion = arbol.getSeleccionado();
         File carpeta = seleccion != null && seleccion.isDirectory() ? seleccion : arbol.getRaiz();
@@ -385,7 +463,6 @@ public class Ide extends JFrame {
         descargar(carpeta);
     }
 
-    /** Guarda una copia del archivo, o la carpeta comprimida en .zip, en la ubicación elegida. */
     private void descargar(File origen) {
         boolean esCarpeta = origen.isDirectory();
         JFileChooser selector = selector(esCarpeta ? "Descargar carpeta" : "Descargar archivo");
@@ -442,7 +519,9 @@ public class Ide extends JFrame {
         System.exit(0);
     }
 
-    // ================================================================== análisis
+    //Parte de analisis
+    private record Analisis(Nodo raiz, TablaSimbolos tabla, List<ErrorCompilacion> errores) {
+    }
 
     private void analizar() {
         Editor editor = editorActual();
@@ -450,24 +529,31 @@ public class Ide extends JFrame {
             info("Abre un archivo para analizarlo.");
             return;
         }
-        Lenguaje lenguaje = editor.getLenguaje();
-        if (lenguaje == null) {
+        if (editor.getLenguaje() == null) {
             info("El archivo no es .pig, .y ni .z.");
             return;
         }
-        // Los archivos abiertos se analizan con el texto del editor, aunque no estén guardados
+        if (analizar(editor).errores().isEmpty()) {
+            info("El análisis de " + editor.getNombre() + " terminó sin errores.");
+        }
+    }
+
+    private Analisis analizar(Editor editor) {
         CargadorProyecto.LectorArchivos lector = archivo -> {
             Editor abierto = buscarEditor(archivo);
             return abierto != null ? abierto.getTexto() : Archivos.leer(archivo);
         };
-        CargadorProyecto.Resultado resultado = lenguaje == Lenguaje.PIG_LATIN
-                ? CargadorProyecto.cargarProyecto(editor.getArchivo(), lector)
+        File principal = archivoPrincipal(editor.getArchivo(), lector);
+        CargadorProyecto.Resultado resultado = principal != null
+                ? CargadorProyecto.cargarProyecto(principal, lector)
                 : CargadorProyecto.cargarArchivo(editor.getArchivo(), lector);
 
         List<ErrorCompilacion> errores = new ArrayList<>(resultado.errores());
-        // El análisis semántico solo tiene sentido si todos los archivos se pudieron construir
+        TablaSimbolos tabla = null;
         if (resultado.exitoso()) {
-            errores.addAll(AnalizadorSemantico.analizar(resultado.raiz()).errores());
+            AnalizadorSemantico.Resultado semantico = AnalizadorSemantico.analizar(resultado.raiz());
+            errores.addAll(semantico.errores());
+            tabla = semantico.tabla();
         }
 
         modeloErrores.setErrores(errores);
@@ -476,9 +562,68 @@ public class Ide extends JFrame {
                     .filter(err -> Archivos.mismoArchivo(new File(err.archivo()), e.getArchivo()))
                     .toList());
         }
-        if (errores.isEmpty()) {
-            info("El análisis de " + editor.getNombre() + " terminó sin errores.");
+        return new Analisis(resultado.raiz(), tabla, errores);
+    }
+
+    private File archivoPrincipal(File archivo, CargadorProyecto.LectorArchivos lector) {
+        if (Lenguaje.desdeArchivo(archivo) == Lenguaje.PIG_LATIN) return archivo;
+        Path buscado = archivo.toPath().toAbsolutePath().normalize();
+        for (File carpeta = archivo.getAbsoluteFile().getParentFile(); carpeta != null; carpeta = carpeta.getParentFile()) {
+            File[] pigs = carpeta.listFiles((d, n) -> n.endsWith(".pig"));
+            if (pigs != null) {
+                for (File pig : pigs) {
+                    try {
+                        for (String linea : lector.leer(pig).split("\\R")) {
+                            String l = linea.strip();
+                            if (!l.startsWith("import ")) continue;
+                            String ruta = l.substring(7).replace(";", "").strip();
+                            int punto = ruta.lastIndexOf('.');
+                            if (punto < 0) continue;
+                            String relativa = ruta.substring(0, punto).replace('.', '/') + ruta.substring(punto);
+                            if (carpeta.toPath().toAbsolutePath().resolve(relativa).normalize().equals(buscado)) return pig;
+                        }
+                    } catch (IOException ignorada) {
+                        // se prueba con el siguiente
+                    }
+                }
+            }
+            if (arbol.getRaiz() != null && Archivos.mismoArchivo(carpeta, arbol.getRaiz())) break;
         }
+        return null;
+    }
+
+    private void traducir() {
+        Editor editor = editorActual();
+        CargadorProyecto.LectorArchivos lector = archivo -> {
+            Editor abierto = buscarEditor(archivo);
+            return abierto != null ? abierto.getTexto() : Archivos.leer(archivo);
+        };
+        File principal = editor == null || editor.getLenguaje() == null ? null : archivoPrincipal(editor.getArchivo(), lector);
+        if (principal == null) {
+            info("Abre el archivo .pig principal del proyecto (o un archivo que importe) para traducirlo.");
+            return;
+        }
+        Analisis analisis = analizar(editor);
+        if (!analisis.errores().isEmpty()) {
+            error("No se puede traducir: el proyecto tiene " + analisis.errores().size() + " error(es).");
+            return;
+        }
+        File salida = new File(principal.getAbsoluteFile().getParentFile(), "main.c");
+        try {
+            String codigo = GeneradorC3D.generar((Programa) analisis.raiz(), analisis.tabla());
+            Archivos.escribir(salida, codigo);
+        } catch (ErrorGeneracion ex) {
+            error("No se pudo traducir " + ex.getNodo().getUbicacion() + ": " + ex.getMessage());
+            return;
+        } catch (IOException ex) {
+            error("No se pudo guardar main.c: " + ex.getMessage());
+            return;
+        }
+        Editor anterior = buscarEditor(salida);
+        if (anterior != null) pestanas.remove(anterior);
+        abrirArchivo(salida);
+        arbol.actualizar();
+        info("La traducción terminó correctamente. Se generó " + salida.getName() + ".");
     }
 
     private void irAError(ErrorCompilacion error) {
@@ -501,8 +646,6 @@ public class Ide extends JFrame {
         scroll.setPreferredSize(new Dimension(720, 500));
         JOptionPane.showMessageDialog(this, scroll, "Tabla de compatibilidad de tipos", JOptionPane.PLAIN_MESSAGE);
     }
-
-    // ================================================================== utilidades
 
     private JFileChooser selector(String titulo) {
         JFileChooser selector = new JFileChooser(preferencias.get(CLAVE_DIRECTORIO, System.getProperty("user.home")));
@@ -536,7 +679,6 @@ public class Ide extends JFrame {
         info(TITULO + "\nOrganización de Lenguajes y Compiladores 2 - Proyecto 1");
     }
 
-    /** Título de pestaña con * si hay cambios sin guardar y botón para cerrar. */
     private final class PestanaCerrable extends JPanel {
         private final Editor editor;
         private final JLabel titulo = new JLabel();

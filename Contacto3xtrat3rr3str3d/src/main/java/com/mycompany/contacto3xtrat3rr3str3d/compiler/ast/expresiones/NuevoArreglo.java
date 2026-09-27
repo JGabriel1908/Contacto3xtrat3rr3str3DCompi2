@@ -2,7 +2,9 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones;
 
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NuevoArreglo extends Expresion {
@@ -34,5 +36,13 @@ public class NuevoArreglo extends Expresion {
         Tipo tipo = base.esError() ? Tipo.ERROR : base.arreglo(dimensiones);
         if (inicializador != null) ctx.verificarLista(tipo, inicializador, List.of(), 0);
         return resultado(tipo);
+    }
+
+    @Override
+    public String generar(ContextoC3D ctx) {
+        if (inicializador != null) return ctx.crearDesdeLista(getTipo(), inicializador, List.of());
+        List<String> valores = new ArrayList<>();
+        for (Expresion t : tamanos) valores.add(t.generar(ctx));
+        return ctx.nuevoArreglo(getTipo(), valores);
     }
 }

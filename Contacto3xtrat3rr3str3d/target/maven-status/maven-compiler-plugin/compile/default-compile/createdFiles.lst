@@ -4,6 +4,7 @@ com/mycompany/C3/grammar/ZetarianoParser$PrimReadlnContext.class
 com/mycompany/C3/grammar/YParser$InsAsignacionContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/expresiones/NuevoObjeto.class
 com/mycompany/C3/grammar/PigLatinParser.class
+com/mycompany/contacto3xtrat3rr3str3d/utils/Archivos$Contenido.class
 com/mycompany/C3/grammar/ZetarianoParser$SenWhileContext.class
 com/mycompany/C3/grammar/YParser$ExprLeerContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/instrucciones/Para.class
@@ -29,6 +30,8 @@ com/mycompany/C3/grammar/ZetarianoParser$EtiquetaCaseContext.class
 com/mycompany/C3/grammar/YParser$SeccionEstructurasContext.class
 com/mycompany/C3/grammar/ZetarianoParser$LiteralContext.class
 com/mycompany/C3/grammar/ZetarianoParser$ModificadorContext.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/TraductorC$1.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/GeneradorC3D.class
 com/mycompany/C3/grammar/PigLatinParser$ExprNuevoContext.class
 com/mycompany/C3/grammar/YParser.class
 com/mycompany/C3/grammar/YParser$ExprAndContext.class
@@ -97,6 +100,7 @@ com/mycompany/C3/grammar/YParser$SufCampoContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/declaraciones/DefFuncion.class
 com/mycompany/contacto3xtrat3rr3str3d/Contacto3xtrat3rr3str3d.class
 com/mycompany/C3/grammar/ZetarianoParser$ExprContext.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/Cuarteta$Operador.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/semantic/ContextoSemantico$Resolucion.class
 com/mycompany/C3/grammar/PigLatinParser$SenLeerContext.class
 com/mycompany/C3/grammar/ZetarianoParser$MiembroContext.class
@@ -119,6 +123,7 @@ com/mycompany/contacto3xtrat3rr3str3d/gui/resaltado/Categoria.class
 com/mycompany/contacto3xtrat3rr3str3d/gui/NumerosLinea.class
 com/mycompany/C3/grammar/ZetarianoParser$EtiquetaSwitchContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/Programa.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/TraductorC.class
 com/mycompany/C3/grammar/YParser$SufIndiceContext.class
 com/mycompany/contacto3xtrat3rr3str3d/gui/Ide$2.class
 com/mycompany/C3/grammar/YParser$FinContext.class
@@ -155,6 +160,7 @@ com/mycompany/C3/grammar/PigLatinParser$AliterSiContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/enviroment/InfoEstructura.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/instrucciones/Seleccion.class
 com/mycompany/C3/grammar/ZetarianoParser$SenExpresionContext.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/Cuarteta.class
 com/mycompany/C3/grammar/ZetarianoParser$TipoBaseContext.class
 com/mycompany/C3/grammar/YParser$ExprLiteralContext.class
 com/mycompany/C3/grammar/YParser$ExprUnariaContext.class
@@ -162,11 +168,14 @@ com/mycompany/C3/grammar/YParser$InsImprimirContext.class
 com/mycompany/C3/grammar/ZetarianoParser.class
 com/mycompany/C3/grammar/ZetarianoParser$PrimIdContext.class
 com/mycompany/C3/grammar/ZetarianoParser$ProgramaContext.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/expresiones/Literal$1.class
 com/mycompany/C3/grammar/YParser$InicioParaContext.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/Nativas.class
 com/mycompany/C3/grammar/ZetarianoParser$ExprTernariaContext.class
 com/mycompany/C3/grammar/YParser$ParamArregloContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/instrucciones/InstruccionLeer.class
 com/mycompany/C3/grammar/PigLatinParser$AccIdContext.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/ContextoC3D$1.class
 com/mycompany/C3/grammar/YParser$InsLeerContext.class
 com/mycompany/C3/grammar/PigLatinParser$ImportacionContext.class
 com/mycompany/C3/grammar/PigLatinParser$SenIncrementoContext.class
@@ -175,6 +184,7 @@ com/mycompany/contacto3xtrat3rr3str3d/compiler/semantic/ContextoSemantico.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/declaraciones/Campo.class
 com/mycompany/C3/grammar/YParser$DeclaracionContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/expresiones/LlamadaFuncion.class
+com/mycompany/contacto3xtrat3rr3str3d/gui/Ide$Analisis.class
 com/mycompany/contacto3xtrat3rr3str3d/gui/Ide$PestanaCerrable.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/enviroment/Simbolo$Categoria.class
 com/mycompany/C3/grammar/ZetarianoParser$PrimThisContext.class
@@ -263,6 +273,8 @@ com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/expresiones/Asignacion.class
 com/mycompany/C3/grammar/PigLatinParser$AliterContext.class
 com/mycompany/contacto3xtrat3rr3str3d/gui/resaltado/Tema.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/semantic/AnalizadorSemantico$Resultado.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/ContextoC3D.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/Direccion.class
 com/mycompany/C3/grammar/YParser$SinoSiContext.class
 com/mycompany/C3/grammar/ZetarianoParser$ExprAditivaContext.class
 com/mycompany/C3/grammar/ZetarianoParser$ExprIgualdadContext.class
@@ -302,6 +314,7 @@ com/mycompany/contacto3xtrat3rr3str3d/gui/Editor$3.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/constructores/ConstructorAstPigLatin.class
 com/mycompany/C3/grammar/PigLatinParser$ValorContext.class
 com/mycompany/C3/grammar/YParser$DeclVariableContext.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/c3d/ErrorGeneracion.class
 com/mycompany/C3/grammar/PigLatinParser$PerInicioContext.class
 com/mycompany/C3/grammar/YParser$SufijoContext.class
 com/mycompany/C3/grammar/YParser$InsCondicionalContext.class
@@ -310,6 +323,7 @@ com/mycompany/C3/grammar/ZetarianoParser$PrimarioContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/UnidadPigLatin.class
 com/mycompany/C3/grammar/ZetarianoParser$SeccionSwitchContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/declaraciones/Import.class
+com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/expresiones/Unaria$1.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/expresiones/Identificador.class
 com/mycompany/C3/grammar/YParser$ExprContext.class
 com/mycompany/contacto3xtrat3rr3str3d/compiler/ast/declaraciones/DefConstructor.class

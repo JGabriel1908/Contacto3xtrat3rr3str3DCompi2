@@ -3,6 +3,7 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.declaraciones;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Nodo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.InfoClase;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.TablaSimbolos;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
@@ -87,5 +88,25 @@ public class DefClase extends Nodo {
         metodos.forEach(m -> m.analizar(ctx));
         ctx.tabla().cerrar();
         ctx.setClaseActual(null);
+    }
+
+    public void nombrar(ContextoC3D ctx) {
+        if (atributos.stream().anyMatch(Atributo::tieneValorInicial)) ctx.nombrar(this, "i_" + nombre);
+        for (int i = 0; i < constructores.size(); i++) ctx.nombrar(constructores.get(i), "c_" + nombre + "_" + i);
+        for (int i = 0; i < metodos.size(); i++) {
+            ctx.nombrar(metodos.get(i), "m_" + nombre + "_" + metodos.get(i).getNombre() + "_" + i);
+        }
+    }
+
+    /** Si algún atributo tiene valor inicial se genera la función de inicio, que se llama antes del constructor. */
+    public void generar(ContextoC3D ctx) {
+        String inicio = ctx.nombre(this);
+        if (inicio != null) {
+            ctx.iniciarFuncion(2);
+            atributos.forEach(a -> a.generar(ctx));
+            ctx.terminarFuncion(inicio);
+        }
+        constructores.forEach(k -> k.generar(ctx));
+        metodos.forEach(m -> m.generar(ctx));
     }
 }

@@ -3,9 +3,6 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Un nivel de la tabla de símbolos (global, clase, función, bloque...).
- */
 public class Ambito {
 
     private final String nombre;

@@ -38,9 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-/**
- * Convierte el árbol de ANTLR de un archivo .pig en el AST común.
- */
 public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
 
     private final ContextoConstruccion ctx;
@@ -64,7 +61,6 @@ public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
         return new UnidadPigLatin(ctx.ubicacion(programa), imports, globales, cuerpo);
     }
 
-    /** import carpeta.sub.Archivo.y  ->  "carpeta/sub/Archivo.y" */
     private Import importacion(PigLatinParser.ImportacionContext c) {
         List<TerminalNode> partes = c.ruta().ID();
         StringBuilder ruta = new StringBuilder();
@@ -76,14 +72,11 @@ public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
         return new Import(ctx.ubicacion(c), ruta.toString(), Lenguaje.desdeNombre(ruta.toString()));
     }
 
-    // ================================================================ declaraciones
-
     private DeclaracionVariable declaracion(PigLatinParser.DeclaracionSimpleContext c) {
         return switch (c) {
             case PigLatinParser.DeclVariableContext v -> new DeclaracionVariable(ctx.ubicacion(v), tipo(v.tipo()),
                     v.ID().getText(), List.of(), v.valor() == null ? null : valor(v.valor()));
             case PigLatinParser.DeclInferidaContext i -> {
-                // esto x : falsus;  /  esto o : novus Persona();  -> el tipo se toma del valor
                 Expresion valor;
                 Tipo tipo;
                 if (i.valorInferido().objetoNuevo() != null) {
@@ -118,8 +111,6 @@ public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
         return new InicializadorLista(ctx.ubicacion(c), elementos);
     }
 
-    // ================================================================ sentencias
-
     private Bloque bloque(PigLatinParser.BloqueContext c) {
         return new Bloque(ctx.ubicacion(c), sentencias(c.sentencia()));
     }
@@ -139,7 +130,6 @@ public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
             case PigLatinParser.SenImprimirContext p -> {
                 List<Expresion> valores = new ArrayList<>();
                 for (PigLatinParser.ExprContext e : p.expr()) valores.add(expr(e));
-                // >> no agrega salto de línea: el programa escribe \n donde lo necesita
                 yield new Imprimir(ctx.ubicacion(p), valores, false);
             }
             case PigLatinParser.SenLeerContext l ->
@@ -156,7 +146,6 @@ public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
     }
 
     private Si si(PigLatinParser.SenSiContext s) {
-        // si / aliter (cond) / aliter  ->  condicionales anidados
         Instruccion sino = s.aliter() == null ? null : bloque(s.aliter().bloque());
         List<PigLatinParser.AliterSiContext> ramas = s.aliterSi();
         for (int i = ramas.size() - 1; i >= 0; i--) {
@@ -189,8 +178,6 @@ public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
         return new Asignacion(ctx.ubicacion(c), acceso(c.acceso()), null, valor(c.valor()));
     }
 
-    // ================================================================ expresiones
-
     private Expresion expr(PigLatinParser.ExprContext c) {
         return (Expresion) visit(c);
     }
@@ -203,7 +190,6 @@ public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
         return resultado;
     }
 
-    /** funcion(...), variable, a[0].b.metodo(...) ... */
     private Expresion acceso(PigLatinParser.AccesoContext c) {
         Expresion actual = switch (c.inicioAcceso()) {
             case PigLatinParser.AccLlamadaContext l ->
@@ -300,8 +286,6 @@ public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
         return new Binaria(ctx.ubicacion(c), OperadorBinario.desdeSimbolo(operador), expr(izq), expr(der));
     }
 
-    // ================================================================ tipos
-
     private Tipo tipo(PigLatinParser.TipoContext c) {
         return switch (c.getStart().getType()) {
             case PigLatinParser.NUMERUS -> Tipo.ENTERO;
@@ -309,7 +293,6 @@ public class ConstructorAstPigLatin extends PigLatinParserBaseVisitor<Nodo> {
             case PigLatinParser.DECIMALIS -> Tipo.DECIMAL;
             case PigLatinParser.LITTERA -> Tipo.CARACTER;
             case PigLatinParser.BOOL -> Tipo.BOOLEANO;
-            // En Pig Latin un nombre puede ser una estructura (.y) o una clase (.z): se resuelve en el semántico
             default -> Tipo.nombrado(c.ID().getText());
         };
     }

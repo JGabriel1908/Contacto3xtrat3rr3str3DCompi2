@@ -2,6 +2,7 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones;
 
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.Lenguaje;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
 public class Romper extends Instruccion {
@@ -16,5 +17,10 @@ public class Romper extends Instruccion {
             ctx.error(this, "'" + ctx.palabra(this, "romper", "break", "interrumpe") + "' solo puede usarse dentro de un ciclo"
                     + (getLenguaje() == Lenguaje.PIG_LATIN ? "" : " o una selección"));
         }
+    }
+
+    @Override
+    public void generar(ContextoC3D ctx) {
+        ctx.saltar(ctx.salidaActual());
     }
 }

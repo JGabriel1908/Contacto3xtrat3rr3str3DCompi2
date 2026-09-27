@@ -3,8 +3,10 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.declaraciones.DefMetodo;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.InfoClase;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LlamadaMetodo extends Expresion {
@@ -41,5 +43,13 @@ public class LlamadaMetodo extends Expresion {
         if (elegido == null) return resultado(Tipo.ERROR);
         declaracion = elegido;
         return resultado(elegido.getTipoRetorno());
+    }
+
+    @Override
+    public String generar(ContextoC3D ctx) {
+        List<String> valores = new ArrayList<>();
+        valores.add(objeto.generar(ctx));
+        for (Expresion a : argumentos) valores.add(a.generar(ctx));
+        return ctx.llamar(ctx.nombre(declaracion), valores);
     }
 }

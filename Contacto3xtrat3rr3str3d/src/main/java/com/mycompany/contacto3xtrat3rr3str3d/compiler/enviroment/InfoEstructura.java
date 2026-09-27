@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** Estructura registrada con sus campos en orden de declaración. */
 public class InfoEstructura {
 
     private final DefEstructura definicion;

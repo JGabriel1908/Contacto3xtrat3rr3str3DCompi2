@@ -8,6 +8,7 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Incremento
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.LlamadaFuncion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.LlamadaMetodo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.NuevoObjeto;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
 public class InstruccionExpresion extends Instruccion {
@@ -28,5 +29,10 @@ public class InstruccionExpresion extends Instruccion {
         if (!valida && !tipo.esError()) {
             ctx.error(expresion, "Esta expresión no es una instrucción válida (se esperaba una asignación o una llamada)");
         }
+    }
+
+    @Override
+    public void generar(ContextoC3D ctx) {
+        expresion.generar(ctx);
     }
 }

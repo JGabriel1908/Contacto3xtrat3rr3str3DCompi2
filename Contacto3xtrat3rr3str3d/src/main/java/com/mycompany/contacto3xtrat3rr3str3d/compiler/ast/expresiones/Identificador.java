@@ -2,6 +2,10 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones;
 
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.declaraciones.Atributo;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.Cuarteta.Operador;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.Direccion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.Simbolo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 
@@ -40,5 +44,20 @@ public class Identificador extends Expresion {
     @Override
     public boolean esAsignable() {
         return simbolo == null || simbolo.esValor();
+    }
+
+    @Override
+    public String generar(ContextoC3D ctx) {
+        return ctx.cargar(direccion(ctx));
+    }
+
+    /** Variables y parámetros viven en el marco; un atributo sin this explícito está en heap[this + desplazamiento]. */
+    @Override
+    public Direccion direccion(ContextoC3D ctx) {
+        if (simbolo.getDeclaracion() instanceof Atributo) {
+            String posicion = ctx.operar(Operador.SUMA, ctx.este(), String.valueOf(simbolo.getDesplazamiento()));
+            return new Direccion(Direccion.HEAP, posicion);
+        }
+        return ctx.local(simbolo.getDesplazamiento());
     }
 }

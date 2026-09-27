@@ -4,18 +4,13 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.declaraciones.DefFunci
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Tabla de símbolos: pila de ámbitos anidados más los registros globales de
- * funciones (.y) y clases (.z).
- */
 public class TablaSimbolos {
 
     private final Ambito global = new Ambito("global", null);
     private Ambito actual = global;
     private final Map<String, DefFuncion> funciones = new LinkedHashMap<>();
     private final Map<String, InfoClase> clases = new LinkedHashMap<>();
-
-    // ------------------------------------------------------------------ ámbitos
+    private final Map<String, InfoEstructura> todasLasEstructuras = new LinkedHashMap<>();
 
     public void abrir(String nombre) {
         actual = new Ambito(nombre, actual);
@@ -25,12 +20,10 @@ public class TablaSimbolos {
         if (actual.getPadre() != null) actual = actual.getPadre();
     }
 
-    /** Declara en el ámbito actual; devuelve false si el nombre ya existe en él. */
     public boolean declarar(Simbolo simbolo) {
         return actual.declarar(simbolo);
     }
 
-    /** Busca desde el ámbito actual hacia el global. */
     public Simbolo buscar(String nombre) {
         for (Ambito a = actual; a != null; a = a.getPadre()) {
             Simbolo s = a.buscarLocal(nombre);
@@ -39,10 +32,14 @@ public class TablaSimbolos {
         return null;
     }
 
-    // ------------------------------------------------------------------ estructuras
-
     public boolean declararEstructura(InfoEstructura estructura) {
-        return actual.declararEstructura(estructura);
+        if (!actual.declararEstructura(estructura)) return false;
+        todasLasEstructuras.put(estructura.getNombre(), estructura);
+        return true;
+    }
+
+    public InfoEstructura estructura(String nombre) {
+        return todasLasEstructuras.get(nombre);
     }
 
     public InfoEstructura buscarEstructura(String nombre) {
@@ -52,8 +49,6 @@ public class TablaSimbolos {
         }
         return null;
     }
-
-    // ------------------------------------------------------------------ funciones y clases
 
     public boolean registrarFuncion(DefFuncion funcion) {
         return funciones.putIfAbsent(funcion.getNombre(), funcion) == null;
@@ -70,7 +65,5 @@ public class TablaSimbolos {
     public InfoClase buscarClase(String nombre) {
         return clases.get(nombre);
     }
-
-    // ------------------------------------------------------------------ reporte
 
 }

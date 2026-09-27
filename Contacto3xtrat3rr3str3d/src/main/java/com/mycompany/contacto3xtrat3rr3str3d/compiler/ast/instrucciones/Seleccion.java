@@ -3,8 +3,12 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.Cuarteta.Operador;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.Nativas;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.TablaCompatibilidad;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,5 +61,38 @@ public class Seleccion extends Instruccion {
             caso.analizar(ctx);
         }
         ctx.salirSeleccion();
+    }
+
+    /** Primero se compara el valor con cada caso; los cuerpos van seguidos para que sin romper continúe al siguiente. */
+    @Override
+    public void generar(ContextoC3D ctx) {
+        String v = valor.generar(ctx);
+        String fin = ctx.etiqueta();
+        String defecto = fin;
+        List<String> etiquetas = new ArrayList<>();
+        for (Caso caso : casos) {
+            String e = ctx.etiqueta();
+            etiquetas.add(e);
+            if (caso.esPorDefecto()) {
+                defecto = e;
+                continue;
+            }
+            String c = caso.getValor().generar(ctx);
+            if (valor.getTipo().es(Tipo.Base.CADENA)) {
+                String iguales = ctx.llamar(Nativas.COMPARAR_CADENAS, List.of(ctx.copia(v), c));
+                ctx.saltarSi(Operador.SI_IGUAL, iguales, "1", e);
+            } else {
+                ctx.usar(c);
+                ctx.emitir(Operador.SI_IGUAL, v, c, e);
+            }
+        }
+        ctx.saltar(defecto);
+        ctx.entrarSeleccion(fin);
+        for (int i = 0; i < casos.size(); i++) {
+            ctx.colocar(etiquetas.get(i));
+            casos.get(i).generar(ctx);
+        }
+        ctx.salirSeleccion();
+        ctx.colocar(fin);
     }
 }

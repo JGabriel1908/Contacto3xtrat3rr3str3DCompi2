@@ -1,7 +1,4 @@
-/*
- * Parser del lenguaje Y?  (archivos .y)
- * Los bloques se delimitan con los tokens INDENT / DEDENT que genera YLexer.
- */
+
 parser grammar YParser;
 
 options { tokenVocab = YLexer; }
@@ -10,7 +7,6 @@ programa
     : seccionEstructuras? seccionFunciones EOF
     ;
 
-// ================================================================ secciones
 
 seccionEstructuras
     : SEC_ESTRUCTURAS NEWLINE defEstructura*
@@ -20,18 +16,15 @@ seccionFunciones
     : SEC_FUNCIONES NEWLINE defFuncion*
     ;
 
-// ================================================================ estructuras
 
 defEstructura
     : ESTRUCTURA ID DOSPUNTOS NEWLINE INDENT campo+ DEDENT
     ;
 
-// Las dimensiones de un arreglo dentro de una estructura deben ser constantes (validación semántica)
 campo
     : tipo ID dimension* fin
     ;
 
-// ================================================================ funciones
 
 defFuncion
     : DEFINIR ID PAR_IZQ parametros? PAR_DER (FLECHA tipo)? DOSPUNTOS bloque
@@ -47,7 +40,6 @@ parametro
     | tipoPrimitivo ID                  # paramValor        // por valor
     ;
 
-// ================================================================ instrucciones
 
 bloque
     : NEWLINE INDENT instruccion+ DEDENT
@@ -71,7 +63,6 @@ instruccion
     | cicloHacer                                  # insHacer
     ;
 
-// El ';' al final de una instrucción es opcional
 fin
     : PUNTO_COMA? NEWLINE
     ;
@@ -85,7 +76,6 @@ dimension
     : COR_IZQ expr COR_DER
     ;
 
-// Una expresión, o una lista entre llaves para arreglos / estructuras: {10, 20, {1, 2}}
 inicializador
     : expr                                                        # iniExpr
     | LLA_IZQ (inicializador (COMA inicializador)*)? LLA_DER      # iniLista
@@ -99,7 +89,6 @@ incremento
     : acceso op=(INCREMENTO | DECREMENTO)
     ;
 
-// variable, variable[i][j], variable.campo, variable.campo[i].otro ...
 acceso
     : ID sufijo*
     ;
@@ -117,7 +106,6 @@ argumentos
     : expr (COMA expr)*
     ;
 
-// ================================================================ control de flujo
 
 condicional
     : SI PAR_IZQ expr PAR_DER ENTONCES bloque sinoSi* contrario?
@@ -143,7 +131,6 @@ casoDefecto
     : SIEMPRE DOSPUNTOS cuerpoCaso
     ;
 
-// El cuerpo de un caso puede ir indentado o al mismo nivel que 'caso'
 cuerpoCaso
     : bloque
     | NEWLINE instruccion*
@@ -171,9 +158,6 @@ cicloHacer
     : HACER DOSPUNTOS? bloque MIENTRAS PAR_IZQ expr PAR_DER fin
     ;
 
-// ================================================================ expresiones
-// Precedencia de mayor a menor
-
 expr
     : PAR_IZQ expr PAR_DER                                            # exprParentesis
     | llamada                                                         # exprLlamada
@@ -197,8 +181,6 @@ literal
     | VERDADERO
     | FALSO
     ;
-
-// ================================================================ tipos
 
 tipo
     : tipoPrimitivo

@@ -2,6 +2,7 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones;
 
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones.Expresion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import java.util.List;
 
@@ -31,5 +32,25 @@ public class Para extends Instruccion {
         ctx.analizarCuerpo(cuerpo, "cuerpo");
         ctx.salirCiclo();
         ctx.tabla().cerrar();
+    }
+
+    @Override
+    public void generar(ContextoC3D ctx) {
+        inicio.forEach(ctx::generar);
+        String ciclo = ctx.etiqueta();
+        String actualizar = ctx.etiqueta();
+        String fin = ctx.etiqueta();
+        ctx.colocar(ciclo);
+        if (condicion != null) ctx.saltarSiFalso(condicion.generar(ctx), fin);
+        ctx.entrarCiclo(fin, actualizar);
+        ctx.generar(cuerpo);
+        ctx.salirCiclo();
+        ctx.colocar(actualizar);
+        for (Expresion e : actualizacion) {
+            e.generar(ctx);
+            ctx.finInstruccion();
+        }
+        ctx.saltar(ciclo);
+        ctx.colocar(fin);
     }
 }

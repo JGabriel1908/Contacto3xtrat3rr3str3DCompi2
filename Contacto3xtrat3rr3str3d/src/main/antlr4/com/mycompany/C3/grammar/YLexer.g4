@@ -1,13 +1,4 @@
-/*
- * Lexer del lenguaje Y?  (archivos .y)
- *
- * El lenguaje define bloques por indentación (estilo Python). El lexer produce
- * tokens NEWLINE, INDENT y DEDENT sintéticos a partir de los saltos de línea:
- *   - Las líneas en blanco o que solo contienen comentarios no generan tokens.
- *   - Dentro de (), [] y {} los saltos de línea se ignoran.
- *   - Al llegar a EOF se emite un NEWLINE final y todos los DEDENT pendientes.
- *   - Un tabulador equivale a avanzar hasta el siguiente múltiplo de 4.
- */
+
 lexer grammar YLexer;
 
 tokens { INDENT, DEDENT }
@@ -18,13 +9,9 @@ import java.util.Deque;
 }
 
 @members {
-    // Tokens listos para entregarse al parser
     private final Deque<Token> pendientes = new ArrayDeque<>();
-    // Niveles de indentación abiertos (el nivel 0 está implícito)
     private final Deque<Integer> indentaciones = new ArrayDeque<>();
-    // Cantidad de (, [ y { sin cerrar
     private int abiertos = 0;
-    // Último token del canal por defecto entregado
     private Token ultimo = null;
     private boolean finProcesado = false;
 
@@ -74,11 +61,8 @@ import java.util.Deque;
     private void procesarSalto(Token t) {
         if (abiertos > 0) return;
         int sig = _input.LA(1);
-        // EOF: procesarFin emite el NEWLINE y los DEDENT
         if (sig == EOF) return;
-        // Línea que solo contiene un comentario: el salto que le sigue decide la indentación
         if (sig == '/' && (_input.LA(2) == '/' || _input.LA(2) == '*')) return;
-        // Saltos al inicio del archivo
         if (ultimo == null) return;
 
         String texto = t.getText();
@@ -138,32 +122,27 @@ import java.util.Deque;
     }
 }
 
-// ---------------------------------------------------------------- comentarios y espacios
 COMENTARIO_LINEA  : '//' ~[\r\n]* -> channel(HIDDEN) ;
 COMENTARIO_BLOQUE : '/*' .*? '*/' -> channel(HIDDEN) ;
 
 NEWLINE : ( '\r'? '\n' [ \t]* )+ ;
 WS      : [ \t\f ​﻿]+ -> skip ;
 
-// ---------------------------------------------------------------- secciones y definiciones
 SEC_ESTRUCTURAS : '%estructuras' ;
 SEC_FUNCIONES   : '%funciones' ;
 ESTRUCTURA      : 'estructura' ;
 DEFINIR         : 'definir' ;
 RETORNAR        : 'retornar' ;
 
-// ---------------------------------------------------------------- tipos
 ENTERO   : 'entero' ;
 FLOTANTE : 'flotante' ;
 CADENA   : 'cadena' ;
 CARACTER : 'caracter' ;
 BOOL     : 'bool' ;
 
-// ---------------------------------------------------------------- literales booleanos
 VERDADERO : 'verdadero' ;
 FALSO     : 'falso' ;
 
-// ---------------------------------------------------------------- control de flujo
 SI        : 'si' ;
 ENTONCES  : 'entonces' ;
 SINO      : 'sino' ;
@@ -177,11 +156,9 @@ PARA      : 'para' ;
 MIENTRAS  : 'mientras' ;
 HACER     : 'hacer' ;
 
-// ---------------------------------------------------------------- funciones nativas
 IMPRIMIR : 'imprimir' ;
 LEER     : 'leer' ;
 
-// ---------------------------------------------------------------- operadores
 INCREMENTO  : '++' ;
 DECREMENTO  : '--' ;
 FLECHA      : '->' ;
@@ -201,7 +178,6 @@ DIV         : '/' ;
 MOD         : '%' ;
 IGUAL       : '=' ;
 
-// ---------------------------------------------------------------- símbolos
 PAR_IZQ    : '(' ;
 PAR_DER    : ')' ;
 COR_IZQ    : '[' ;
@@ -213,7 +189,6 @@ COMA       : ',' ;
 DOSPUNTOS  : ':' ;
 PUNTO_COMA : ';' ;
 
-// ---------------------------------------------------------------- literales e identificadores
 DECIMAL_LIT  : [0-9]+ '.' [0-9]+ ;
 ENTERO_LIT   : [0-9]+ ;
 CADENA_LIT   : '"' ( ~["\\\r\n] | ESCAPE )* '"' ;
@@ -223,5 +198,4 @@ ID           : LETRA ( LETRA | [0-9] )* ;
 fragment LETRA  : [a-zA-Z_áéíóúÁÉÍÓÚñÑüÜ] ;
 fragment ESCAPE : '\\' [nrt"'\\0] ;
 
-// Cualquier otro carácter es un error léxico
 ERROR_CHAR : . ;

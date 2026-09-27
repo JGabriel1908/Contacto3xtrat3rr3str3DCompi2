@@ -3,6 +3,7 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.declaraciones;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.instrucciones.Instruccion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.InfoEstructura;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.Simbolo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.TablaSimbolos;
@@ -76,5 +77,10 @@ public class DefEstructura extends Instruccion {
             validarCampos(ctx, info);
             verificarCiclo(ctx, info);
         }
+    }
+
+    @Override
+    public void generar(ContextoC3D ctx) {
+        // La definición no produce código: solo determina la forma de la memoria
     }
 }

@@ -118,13 +118,9 @@ public class YLexer extends Lexer {
 	}
 
 
-	    // Tokens listos para entregarse al parser
 	    private final Deque<Token> pendientes = new ArrayDeque<>();
-	    // Niveles de indentación abiertos (el nivel 0 está implícito)
 	    private final Deque<Integer> indentaciones = new ArrayDeque<>();
-	    // Cantidad de (, [ y { sin cerrar
 	    private int abiertos = 0;
-	    // Último token del canal por defecto entregado
 	    private Token ultimo = null;
 	    private boolean finProcesado = false;
 
@@ -174,11 +170,8 @@ public class YLexer extends Lexer {
 	    private void procesarSalto(Token t) {
 	        if (abiertos > 0) return;
 	        int sig = _input.LA(1);
-	        // EOF: procesarFin emite el NEWLINE y los DEDENT
 	        if (sig == EOF) return;
-	        // Línea que solo contiene un comentario: el salto que le sigue decide la indentación
 	        if (sig == '/' && (_input.LA(2) == '/' || _input.LA(2) == '*')) return;
-	        // Saltos al inicio del archivo
 	        if (ultimo == null) return;
 
 	        String texto = t.getText();

@@ -110,13 +110,8 @@ public final class AnalizadorSintactico {
         return Integer.MIN_VALUE;
     }
 
-    /** Traduce los mensajes estándar de ANTLR al español. */
     static String traducir(String mensaje) {
         Matcher m;
-        // Pig Latin: el archivo terminó sin cerrar la sección principal
-        if (mensaje.contains("<EOF>") && mensaje.contains("'FINIS'")) {
-            return "Falta 'FINIS;' al final del programa para cerrar la sección MAIOR>";
-        }
         if ((m = NO_COINCIDE.matcher(mensaje)).matches()) {
             return "Se encontró " + legible(m.group(1)) + " pero se esperaba " + legible(m.group(2));
         }

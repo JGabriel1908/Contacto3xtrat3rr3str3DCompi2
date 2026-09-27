@@ -20,10 +20,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 
-/**
- * Margen izquierdo del editor con los números de línea.
- * Resalta la línea del cursor y marca en rojo las líneas con errores.
- */
 public class NumerosLinea extends JComponent {
 
     private static final int RELLENO = 12;

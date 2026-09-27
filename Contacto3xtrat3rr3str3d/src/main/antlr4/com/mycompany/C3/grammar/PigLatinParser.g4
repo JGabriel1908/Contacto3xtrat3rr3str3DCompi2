@@ -1,9 +1,4 @@
-/*
- * Parser del lenguaje Pig Latin  (archivos .pig)
- *
- * El ';' final es opcional en todas las sentencias.
- * En la impresión cada elemento va precedido de '>>':  >> "Poder: " >> calcular(x)
- */
+
 parser grammar PigLatinParser;
 
 options { tokenVocab = PigLatinLexer; }
@@ -12,9 +7,6 @@ programa
     : importacion* seccionVariables? seccionPrincipal EOF
     ;
 
-// ================================================================ secciones
-
-// import carpeta.Objeto1.z  /  import carpeta.Funciones.y
 importacion
     : IMPORT ruta PUNTO_COMA?
     ;
@@ -23,16 +15,13 @@ ruta
     : ID (PUNTO ID)+
     ;
 
-// Solo variables, arreglos y estructuras/objetos globales
 seccionVariables
     : SEC_VARIABLES declaracion*
     ;
 
 seccionPrincipal
-    : SEC_PRINCIPAL sentencia* FIN_PROGRAMA PUNTO_COMA?
+    : SEC_PRINCIPAL sentencia* (FIN_PROGRAMA PUNTO_COMA?)?
     ;
-
-// ================================================================ declaraciones
 
 declaracion
     : declaracionSimple PUNTO_COMA?
@@ -44,7 +33,6 @@ declaracionSimple
     | SERIES ID dimension+ DOSPUNTOS tipo inicializadorLista?     # declArreglo
     ;
 
-// El tipo se deduce del valor
 valorInferido
     : objetoNuevo
     | literal
@@ -54,7 +42,6 @@ dimension
     : COR_IZQ expr COR_DER
     ;
 
-// Una expresión o una lista entre llaves (arreglos y estructuras, admite anidamiento)
 valor
     : expr
     | inicializadorLista
@@ -63,8 +50,6 @@ valor
 inicializadorLista
     : LLA_IZQ (valor (COMA valor)*)? LLA_DER
     ;
-
-// ================================================================ sentencias
 
 bloque
     : LLA_IZQ sentencia* LLA_DER
@@ -107,7 +92,6 @@ perActualizacion
     | asignacion
     ;
 
-// variable, arreglo[i], obj.atributo, obj.metodo(...), funcion(...), a[0].b.c(...)
 acceso
     : inicioAcceso sufijo*
     ;
@@ -130,9 +114,6 @@ objetoNuevo
 argumentos
     : expr (COMA expr)*
     ;
-
-// ================================================================ expresiones
-// Precedencia de mayor a menor. En expresiones '=' también es comparación de igualdad.
 
 expr
     : PAR_IZQ expr PAR_DER                                            # exprParentesis
@@ -157,7 +138,6 @@ literal
     | FALSUS
     ;
 
-// ================================================================ tipos
 
 tipo
     : NUMERUS
@@ -165,5 +145,5 @@ tipo
     | DECIMALIS
     | LITTERA
     | BOOL
-    | ID            // estructura (.y) u objeto (.z)
+    | ID           
     ;

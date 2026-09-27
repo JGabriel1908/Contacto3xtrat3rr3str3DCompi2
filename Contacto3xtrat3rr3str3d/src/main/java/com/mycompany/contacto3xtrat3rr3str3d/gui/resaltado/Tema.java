@@ -12,9 +12,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-/**
- * Colores y fuentes de la IDE (tema oscuro).
- */
 public final class Tema {
 
     public static final Color FONDO = new Color(0x1E1F22);

@@ -6,7 +6,9 @@ import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.declaraciones.DefFuncion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.declaraciones.DefMetodo;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LlamadaFuncion extends Expresion {
@@ -51,5 +53,14 @@ public class LlamadaFuncion extends Expresion {
         declaracion = funcion;
         ctx.verificarArgumentosFuncion(funcion, argumentos, tipos, this);
         return resultado(funcion.getTipoRetorno());
+    }
+
+    /** Dentro de una clase la llamada es a un método del mismo objeto: se pasa this como primer argumento. */
+    @Override
+    public String generar(ContextoC3D ctx) {
+        List<String> valores = new ArrayList<>();
+        if (declaracion instanceof DefMetodo) valores.add(ctx.este());
+        for (Expresion a : argumentos) valores.add(a.generar(ctx));
+        return ctx.llamar(ctx.nombre(declaracion), valores);
     }
 }

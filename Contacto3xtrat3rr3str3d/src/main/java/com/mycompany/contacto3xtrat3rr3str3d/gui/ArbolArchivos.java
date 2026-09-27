@@ -30,13 +30,8 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-/**
- * Explorador del árbol de trabajo. Doble clic abre un archivo; clic derecho permite
- * renombrar, eliminar o actualizar.
- */
 public class ArbolArchivos extends JPanel {
 
-    /** Operaciones que resuelve la ventana principal. */
     public interface Acciones {
         void abrir(File archivo);
 
@@ -86,8 +81,6 @@ public class ArbolArchivos extends JPanel {
         add(contenido, BorderLayout.CENTER);
         tarjetas.show(contenido, "vacio");
     }
-
-    // ------------------------------------------------------------------ carpeta raíz
 
     public File getRaiz() {
         return raiz;
@@ -172,8 +165,6 @@ public class ArbolArchivos extends JPanel {
         if (seleccionado == null) return raiz;
         return seleccionado.isDirectory() ? seleccionado : seleccionado.getParentFile();
     }
-
-    // ------------------------------------------------------------------ operaciones
 
     public void nuevoArchivo() {
         String nombre = pedirNombre("Nombre del archivo (ej. main.pig, Funciones.y, Persona.z):", "");
@@ -285,7 +276,6 @@ public class ArbolArchivos extends JPanel {
         return item;
     }
 
-    /** Muestra solo el nombre del archivo, con icono de carpeta o de archivo. */
     private static final class Renderizador extends DefaultTreeCellRenderer {
         @Override
         public Component getTreeCellRendererComponent(JTree arbol, Object valor, boolean seleccionado,

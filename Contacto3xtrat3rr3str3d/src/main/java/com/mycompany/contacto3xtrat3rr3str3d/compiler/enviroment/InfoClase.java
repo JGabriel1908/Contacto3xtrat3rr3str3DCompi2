@@ -34,6 +34,10 @@ public class InfoClase {
         return atributos.get(nombre);
     }
 
+    public int getCantidadAtributos() {
+        return atributos.size();
+    }
+
     public boolean agregarAtributo(Simbolo atributo) {
         return atributos.putIfAbsent(atributo.getNombre(), atributo) == null;
     }

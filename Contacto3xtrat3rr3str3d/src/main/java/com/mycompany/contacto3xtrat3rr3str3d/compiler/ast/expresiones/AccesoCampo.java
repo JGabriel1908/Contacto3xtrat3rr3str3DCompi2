@@ -2,10 +2,14 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones;
 
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.Cuarteta.Operador;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.Direccion;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.InfoClase;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.InfoEstructura;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.enviroment.Simbolo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
+import java.util.List;
 
 public class AccesoCampo extends Expresion {
 
@@ -51,5 +55,38 @@ public class AccesoCampo extends Expresion {
     @Override
     public boolean esAsignable() {
         return true;
+    }
+
+    /** Una estructura o arreglo guardado dentro de una estructura: su valor es su dirección. */
+    public boolean esEnLinea() {
+        return objeto.getTipo().es(Tipo.Base.ESTRUCTURA) && (getTipo().esArreglo() || getTipo().es(Tipo.Base.ESTRUCTURA));
+    }
+
+    @Override
+    public String generar(ContextoC3D ctx) {
+        String posicion = posicion(ctx);
+        return esEnLinea() ? posicion : ctx.cargar(Direccion.HEAP, posicion);
+    }
+
+    @Override
+    public Direccion direccion(ContextoC3D ctx) {
+        return new Direccion(Direccion.HEAP, posicion(ctx));
+    }
+
+    private String posicion(ContextoC3D ctx) {
+        String base = objeto.generar(ctx);
+        Tipo tipoObjeto = objeto.getTipo();
+        int desplazamiento = tipoObjeto.es(Tipo.Base.CLASE)
+                ? ctx.tabla().buscarClase(tipoObjeto.getNombre()).getAtributo(campo).getDesplazamiento()
+                : ctx.desplazamientoCampo(ctx.estructura(tipoObjeto), campo);
+        return ctx.operar(Operador.SUMA, base, String.valueOf(desplazamiento));
+    }
+
+    public int tamanoEnLinea(ContextoC3D ctx) {
+        return ctx.tamanoCampo(ctx.estructura(objeto.getTipo()).getCampo(campo));
+    }
+
+    public List<Integer> dimensiones(ContextoC3D ctx) {
+        return ctx.dimensionesCampo(ctx.estructura(objeto.getTipo()).getCampo(campo));
     }
 }

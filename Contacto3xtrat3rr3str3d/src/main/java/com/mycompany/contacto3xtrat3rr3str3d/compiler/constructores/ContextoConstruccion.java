@@ -10,10 +10,6 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
-/**
- * Datos y utilidades compartidas por los tres constructores de AST:
- * ubicaciones, conversión de literales y registro de errores.
- */
 public class ContextoConstruccion {
 
     private final String archivo;
@@ -39,8 +35,6 @@ public class ContextoConstruccion {
                 token.getLine(), token.getCharPositionInLine(), Math.max(1, token.getText().length())));
     }
 
-    // ------------------------------------------------------------------ literales
-
     public Literal entero(Token token) {
         int valor = 0;
         try {
@@ -57,7 +51,6 @@ public class ContextoConstruccion {
 
     public Literal cadena(Token token) {
         String texto = token.getText();
-        // Quita las comillas (normales o tipográficas)
         return new Literal(ubicacion(token), Tipo.CADENA, procesarEscapes(texto.substring(1, texto.length() - 1)));
     }
 

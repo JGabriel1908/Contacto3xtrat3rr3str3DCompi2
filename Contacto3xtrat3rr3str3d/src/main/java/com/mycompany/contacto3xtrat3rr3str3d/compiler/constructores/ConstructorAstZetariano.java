@@ -49,9 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-/**
- * Convierte el árbol de ANTLR de un archivo .z en el AST común.
- */
 public class ConstructorAstZetariano extends ZetarianoParserBaseVisitor<Nodo> {
 
     private final ContextoConstruccion ctx;
@@ -63,8 +60,6 @@ public class ConstructorAstZetariano extends ZetarianoParserBaseVisitor<Nodo> {
     public UnidadZetariano construir(ZetarianoParser.ProgramaContext programa) {
         return new UnidadZetariano(ctx.ubicacion(programa), clase(programa.clase()));
     }
-
-    // ================================================================ clase
 
     private DefClase clase(ZetarianoParser.ClaseContext c) {
         List<Atributo> atributos = new ArrayList<>();
@@ -99,7 +94,6 @@ public class ConstructorAstZetariano extends ZetarianoParserBaseVisitor<Nodo> {
         if (c == null) return resultado;
         for (ZetarianoParser.ParametroContext p : c.parametro()) {
             Tipo tipo = tipo(p.tipo());
-            // Como en Java: primitivos por valor, arreglos y objetos por referencia
             ModoPaso modo = tipo.esReferencia() ? ModoPaso.REFERENCIA : ModoPaso.VALOR;
             resultado.add(new Parametro(ctx.ubicacion(p), tipo, p.ID().getText(), modo));
         }
@@ -115,22 +109,18 @@ public class ConstructorAstZetariano extends ZetarianoParserBaseVisitor<Nodo> {
         };
     }
 
-    // ================================================================ sentencias
-
     private Bloque bloque(ZetarianoParser.BloqueContext c) {
         List<Instruccion> instrucciones = new ArrayList<>();
         for (ZetarianoParser.SentenciaContext s : c.sentencia()) instrucciones.addAll(sentencia(s));
         return new Bloque(ctx.ubicacion(c), instrucciones);
     }
 
-    /** Cuerpo de if/while/for: si no es un bloque se envuelve en uno. */
     private Instruccion cuerpo(ZetarianoParser.SentenciaContext c) {
         List<Instruccion> lista = sentencia(c);
         if (lista.size() == 1) return lista.get(0);
         return new Bloque(ctx.ubicacion(c), lista);
     }
 
-    /** Una sentencia puede producir varias instrucciones (int a = 1, b = 2;) o ninguna (;). */
     private List<Instruccion> sentencia(ZetarianoParser.SentenciaContext c) {
         return switch (c) {
             case ZetarianoParser.SenBloqueContext b -> List.of(bloque(b.bloque()));
@@ -159,7 +149,6 @@ public class ConstructorAstZetariano extends ZetarianoParserBaseVisitor<Nodo> {
     }
 
     private Instruccion instruccionExpresion(ParserRuleContext c, Expresion e) {
-        // readln(); descarta lo leído
         if (e instanceof Leer) return new InstruccionLeer(ctx.ubicacion(c), null);
         return new InstruccionExpresion(ctx.ubicacion(c), e);
     }
@@ -202,8 +191,6 @@ public class ConstructorAstZetariano extends ZetarianoParserBaseVisitor<Nodo> {
         Expresion condicion = f.expr() == null ? null : expr(f.expr());
         return new Para(ctx.ubicacion(f), inicio, condicion, actualizacion, cuerpo(f.sentencia()));
     }
-
-    // ================================================================ expresiones
 
     private Expresion expr(ZetarianoParser.ExprContext c) {
         return (Expresion) visit(c);
@@ -309,8 +296,6 @@ public class ConstructorAstZetariano extends ZetarianoParserBaseVisitor<Nodo> {
         return new Binaria(ctx.ubicacion(c), OperadorBinario.desdeSimbolo(operador), expr(izq), expr(der));
     }
 
-    // --- primarios
-
     @Override
     public Nodo visitPrimParentesis(ZetarianoParser.PrimParentesisContext c) {
         return expr(c.expr());
@@ -367,8 +352,6 @@ public class ConstructorAstZetariano extends ZetarianoParserBaseVisitor<Nodo> {
         return new NuevoArreglo(ctx.ubicacion(c), tipoBase(c.tipoBase()), List.of(), c.COR_IZQ().size(),
                 inicializadorArreglo(c.inicializadorArreglo()));
     }
-
-    // ================================================================ tipos
 
     private Tipo tipo(ZetarianoParser.TipoContext c) {
         return tipoBase(c.tipoBase()).arreglo(c.COR_IZQ().size());

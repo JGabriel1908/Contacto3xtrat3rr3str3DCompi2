@@ -2,6 +2,8 @@ package com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.expresiones;
 
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Tipo;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.ast.Ubicacion;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.ContextoC3D;
+import com.mycompany.contacto3xtrat3rr3str3d.compiler.c3d.Cuarteta.Operador;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.ContextoSemantico;
 import com.mycompany.contacto3xtrat3rr3str3d.compiler.semantic.TablaCompatibilidad;
 
@@ -44,5 +46,23 @@ public class Binaria extends Expresion {
             };
         }
         return null;
+    }
+
+    /** && y || en cortocircuito: la derecha solo se evalúa si hace falta. */
+    @Override
+    public String generar(ContextoC3D ctx) {
+        if (operador == OperadorBinario.AND || operador == OperadorBinario.OR) {
+            String resultado = ctx.asignar(izquierda.generar(ctx));
+            String fin = ctx.etiqueta();
+            ctx.emitir(operador == OperadorBinario.AND ? Operador.SI_IGUAL : Operador.SI_DIFERENTE, resultado, "0", fin);
+            String valorDerecha = derecha.generar(ctx);
+            ctx.usar(valorDerecha);
+            ctx.emitir(Operador.ASIGNACION, valorDerecha, null, resultado);
+            ctx.colocar(fin);
+            return resultado;
+        }
+        String a = izquierda.generar(ctx);
+        String b = derecha.generar(ctx);
+        return ctx.binaria(operador, a, izquierda.getTipo(), b, derecha.getTipo(), getTipo(), getLenguaje());
     }
 }
